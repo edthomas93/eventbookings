@@ -8,7 +8,7 @@ const initialiseApp = async (): Promise<Express> => {
   app.get('/healthcheck', (req, res) => {
     res.status(200).send('OK');
   });
-  app.use('/events/users', routers.users);
+  app.use('/users', routers.users);
   return app;
 };
 
