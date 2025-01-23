@@ -24,10 +24,10 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: npm install
+        run: npm i
 
       - name: Start the application
-        run: npm start
+        run: npm run start
 
       - name: Wait for server to start
         run: npx wait-on http://localhost:3001
