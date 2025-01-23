@@ -1,0 +1,27 @@
+{
+  "name": "eventbookings",
+  "version": "1.0.0",
+  "description": "A scalable, containerized Node.js application that demonstrates CRUD operations using SQL, Docker orchestration, Kubernetes deployment, and pub/sub mechanisms. This project serves as a demonstration of modern backend development practices.",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node ./dist/index.js",
+    "test": "node_modules/.bin/jest  --forceExit"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "express": "^4.21.2",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.7",
+    "jest": "^29.7.0",
+    "typescript": "^5.7.3"
+  }
+}
