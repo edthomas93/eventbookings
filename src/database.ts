@@ -64,11 +64,11 @@ Event.init(
       type: DataTypes.TEXT,
     },
     startDateTime: {
-      type: DataTypes.TIME,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     endDateTime: {
-      type: DataTypes.TIME,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     hostId: {
@@ -117,11 +117,11 @@ User.hasMany(Event, { foreignKey: 'hostId', as: 'hostedEvents' });
 Event.belongsTo(User, { foreignKey: 'hostId', as: 'host' });
 
 // A user can have multiple bookings
-User.hasMany(Booking, { foreignKey: 'user_id', as: 'bookings' });
-Booking.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(Booking, { foreignKey: 'userId', as: 'bookings' });
+Booking.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 // An event can have multiple bookings
-Event.hasMany(Booking, { foreignKey: 'event_id', as: 'eventBookings' });
-Booking.belongsTo(Event, { foreignKey: 'event_id', as: 'event' });
+Event.hasMany(Booking, { foreignKey: 'eventId', as: 'eventBookings' });
+Booking.belongsTo(Event, { foreignKey: 'eventId', as: 'event' });
 
 export { sequelize, User, Event, Booking };

@@ -1,0 +1,352 @@
+openapi: 3.0.0
+info:
+  title: Event Booking API
+  description: API for managing users, events, and bookings.
+  version: 1.0.0
+paths:
+  /users:
+    post:
+      tags: 
+        - Users
+      summary: Create a new user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  example: john.doe@example.com
+                role:
+                  type: string
+                  enum: [host, attendee]
+                  example: host
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request
+    get:
+      tags: 
+        - Users
+      summary: Retrieve all users
+      operationId: getUsers
+      parameters:
+        - in: query
+          name: role
+          schema:
+            type: string
+            enum: [host, attendee]
+          description: Filter users by role
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            example: 10
+          description: Number of users to return
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            example: 0
+          description: Offset for pagination
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      tags: 
+        - Users
+      summary: Retrieve a user by ID
+      operationId: getUserById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+    patch:
+      tags: 
+        - Users
+      summary: Update a user
+      operationId: updateUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Updated Name
+                email:
+                  type: string
+                  example: updated.email@example.com
+                role:
+                  type: string
+                  enum: [host, attendee]
+                  example: attendee
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+    delete:
+      tags: 
+        - Users
+      summary: Delete a user
+      operationId: deleteUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+  /events:
+    post:
+      tags: 
+        - Events
+      summary: Create a new event
+      operationId: createEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Rock Concert
+                description:
+                  type: string
+                  example: An amazing rock concert!
+                startDateTime:
+                  type: string
+                  format: date-time
+                  example: 2025-01-19T19:00:00Z
+                endDateTime:
+                  type: string
+                  format: date-time
+                  example: 2025-01-19T23:00:00Z
+                hostId:
+                  type: string
+      responses:
+        '201':
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Bad Request
+    get:
+      tags: 
+        - Events
+      summary: Retrieve all events
+      operationId: getEvents
+      parameters:
+        - in: query
+          name: hostId
+          schema:
+            type: string
+          description: Filter events by host ID
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            example: 10
+          description: Number of events to return
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            example: 0
+          description: Offset for pagination
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+  /events/{id}:
+    get:
+      tags: 
+        - Events
+      summary: Retrieve an event by ID
+      operationId: getEventById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+    patch:
+      tags: 
+        - Events
+      summary: Update an event
+      operationId: updateEvent
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                startDateTime:
+                  type: string
+                  format: date-time
+                endDateTime:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+  /bookings:
+    post:
+      tags: 
+        - Bookings
+      summary: Create a booking
+      operationId: createBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                eventId:
+                  type: string
+      responses:
+        '201':
+          description: Booking created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Bad Request
+    get:
+      tags: 
+        - Bookings
+      summary: Retrieve all bookings
+      operationId: getBookings
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        startDateTime:
+          type: string
+          format: date-time
+        endDateTime:
+          type: string
+          format: date-time
+        hostId:
+          type: string
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        eventId:
+          type: string

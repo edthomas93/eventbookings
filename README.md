@@ -26,51 +26,114 @@ This system allows two types of users:
 
 ---
 
-## Users Routes
+## Progress
+1. Set up repository :white_check_mark:
+    - Initialized a Git repository.
+    - Configured .gitignore to exclude sensitive files like .env and unnecessary files like node_modules.
+    - Set up a basic README file with project information.
+2. Set up DB, basic route and tests :white_check_mark:
+    - Configured Sequelize with SQLite as the database.
+    - Created the database schema for Users, Events, and Bookings.
+    - Set up a basic route (GET /users) and tested it with seeded data.
+    - Installed and configured Jest for unit and integration tests.
+3. Add all CRUD routes
+    - 3.1 Users
+        - POST /users: Create a user with validation for fields like email and role.
+        - GET /users: Retrieve all users with optional filters (e.g., by role).
+        - GET /users/:id: Retrieve a specific user by their ID.
+        - PUT /users/:id: Update user details (e.g., name, email).
+        - DELETE /users/:id: Delete a user and cascade related entities (e.g., hosted events).
+    - 3.2 Events
+        - POST /events: Allow hosts to create an event, with fields like startDateTime and endDateTime.
+        - GET /events: Retrieve all events with filters (e.g., by date or host) and pagination.
+        - GET /events/:id: Retrieve a specific event by its ID.
+        - PUT /events/:id: Update event details (e.g., description or date).
+        - DELETE /events/:id: Delete an event and cascade bookings.
+    - 3.3 Bookings
+        - POST /bookings: Allow users to book an event.
+        - GET /bookings: Retrieve all bookings with pagination.
+        - GET /bookings/:id: Retrieve a specific booking.
+        - DELETE /bookings/:id: Cancel a booking.
+    - 3.4 Filtering, Pagination, Sorting
+        - Add query parameters like ?limit=10&offset=0&sort=date&order=asc for:
+4. Add authentication
+    - Implement user registration (POST /auth/register).
+    - Implement user login with JWT (POST /auth/login).
+    - Protect sensitive routes with JWT middleware.
+    - Role-based access control:
+        - Hosts can create, update, and delete events.
+        - Attendees can book events and view their bookings.
+5. Containerize the Application
+    - Create a Dockerfile for the Node.js app.
+    - Set up docker-compose.yml to include:
+        - The Node.js application.
+        - SQLite database.
+        - Test containerized environment locally.
+6. Add email notifications
+    - Kafka service to handle to decouple, for scalability and fault tolerance.
+7. Deploy application
 
-### Overview
-The Users routes handle operations related to managing application users.
+---
 
-### Routes
-- `GET /users`: Fetch all users.
-- `POST /users`: Create a new user.
-- `PUT /users/:id`: Update user details.
-- `DELETE /users/:id`: Delete a user.
+## **Database Schema**
 
-### Overview
-The Events routes manage the creation, retrieval, updating, and deletion of events by event hosts.
+### **Tables**
 
-### Routes
-- `GET /events`: Fetch all events.
-- `POST /events`: Create a new event.
-- `PUT /events/:id`: Update event details.
-- `DELETE /events/:id`: Delete an event.
+#### **Users**
+Manages application users.
 
-## Bookings Routes
+| Column Name | Type   | Description                           |
+|-------------|--------|---------------------------------------|
+| `id`        | UUID   | Primary Key                          |
+| `name`      | STRING | Name of the user                     |
+| `email`     | STRING | Email address (unique)               |
+| `role`      | ENUM   | Role of the user: "host" or "attendee"|
 
-### Overview
-The Bookings routes manage user bookings for events.
+---
 
-### Routes
-- `GET /bookings`: Fetch all bookings.
-- `POST /bookings`: Create a booking.
-- `DELETE /bookings/:id`: Cancel a booking.
+#### **Events**
+Tracks events hosted by users.
 
-## Database Schema
+| Column Name       | Type   | Description                              |
+|-------------------|--------|------------------------------------------|
+| `id`              | UUID   | Primary Key                              |
+| `title`           | STRING | Title of the event                      |
+| `description`     | TEXT   | Description of the event (optional)     |
+| `startDateTime`   | DATE   | Start date and time of the event        |
+| `endDateTime`     | DATE   | End date and time of the event          |
+| `hostId`          | UUID   | Foreign Key referencing `Users(id)`     |
 
-### Tables
-- **Users**: Manage application users.
-    - `id` (Primary Key)
-    - `name` (Text)
-    - `email` (Text, Unique)
-    - `role` (Text: "host" or "attendee")
-- **Events**: Manage events.
-    - `id` (Primary Key)
-    - `title` (Text)
-    - `description` (Text)
-    - `date` (Text)
-    - `host_id` (Foreign Key -> Users)
-- **Bookings**: Track event bookings.
-    - `id` (Primary Key)
-    - `user_id` (Foreign Key -> Users)
-    - `event_id` (Foreign Key -> Events)
+---
+
+#### **Bookings**
+Tracks event bookings by users.
+
+| Column Name | Type   | Description                              |
+|-------------|--------|------------------------------------------|
+| `id`        | UUID   | Primary Key                              |
+| `userId`    | UUID   | Foreign Key referencing `Users(id)`     |
+| `eventId`   | UUID   | Foreign Key referencing `Events(id)`    |
+
+---
+
+### **Relationships**
+
+1. **Users and Events**:
+   - A user (role: "host") can host multiple events.
+   - Relationship: `User.hasMany(Event, { foreignKey: 'hostId', as: 'hostedEvents' })`.
+
+2. **Users and Bookings**:
+   - A user (role: "attendee") can book multiple events.
+   - Relationship: `User.hasMany(Booking, { foreignKey: 'userId', as: 'bookings' })`.
+
+3. **Events and Bookings**:
+   - An event can have multiple bookings by users.
+   - Relationship: `Event.hasMany(Booking, { foreignKey: 'eventId', as: 'eventBookings' })`.
+
+---
+
+### **Additional Details**
+- **UUIDs**: Used as primary keys for all tables to ensure uniqueness.
+- **Validations**:
+  - `email` in `Users` is unique and cannot be null.
+  - `startDateTime` and `endDateTime` in `Events` are required and must be valid `DATE` values.
