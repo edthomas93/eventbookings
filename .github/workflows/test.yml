@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
@@ -29,15 +29,15 @@ jobs:
       - name: Install dependencies
         run: npm i
 
-      - name: Start Docker containers
-        run: npm run docker:up
+      - name: Start PostgreSQL and Application
+        run: npm run docker:up &
 
-      - name: Wait for server to start
+      - name: Wait for Application to Start
         run: npx wait-on http://localhost:3001/healthcheck
 
-      - name: Run tests
+      - name: Run Tests
         run: npm t
 
       - name: Tear down Docker containers
-        if: always() # Ensures this step runs even if tests fail
+        if: always()
         run: npm run docker:down
