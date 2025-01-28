@@ -6,7 +6,7 @@ import { sequelize } from './database';
 const app: Express = express();
 
 const initialiseApp = async (): Promise<Express> => {
-  await sequelize.authenticate();
+  await sequelize.sync({ force: true }); // TODO: update this once there's a dedicated DB server
   console.log('Connection has been established successfully.');
 
   app.get('/healthcheck', (req, res) => {
