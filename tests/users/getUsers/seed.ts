@@ -9,8 +9,6 @@ const bookingId2 = '9363600b-0e79-4993-8515-66e6d540aa2a';
 
 const upSeedDB = async () => {
   try {
-    await sequelize.sync({ force: true });
-
     const host = await User.create({ id: hostId, name: 'John Doe', email: 'john@example.com', role: 'host' });
     const attendee = await User.create({ id: attendeeId, name: 'Jane Smith', email: 'jane@example.com', role: 'attendee' });
 
