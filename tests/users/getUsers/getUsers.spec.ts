@@ -1,12 +1,16 @@
 import axios from 'axios';
-import seed from '../seed';
+import { upSeedDB, downSeedDB } from './seed';
 
 const BASE_URL = 'http://localhost:3001/users';
 
 describe('GET /users', () => {
 
   beforeAll(async () => {
-    await seed();
+    await upSeedDB();
+  });
+
+  afterAll(async () => {
+    await downSeedDB();
   });
 
   describe('Success', () => {
