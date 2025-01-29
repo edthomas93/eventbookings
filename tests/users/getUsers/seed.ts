@@ -71,8 +71,6 @@ const downSeedDB = async () => {
     console.log('Database unseeded successfully.');
   } catch (error) {
     console.error('Error unseeding database:', error);
-  } finally {
-    sequelize.close();
   }
 };
 

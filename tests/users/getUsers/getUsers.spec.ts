@@ -5,11 +5,11 @@ const BASE_URL = 'http://localhost:3001/users';
 
 describe('GET /users', () => {
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     await upSeedDB();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await downSeedDB();
   });
 

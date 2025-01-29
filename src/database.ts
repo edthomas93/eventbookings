@@ -7,6 +7,7 @@ const sequelize = new Sequelize({
   database: process.env.DB_NAME || 'eventbookings',
   username: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
+  logging: false,
 });
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {

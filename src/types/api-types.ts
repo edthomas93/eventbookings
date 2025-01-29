@@ -100,25 +100,25 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         User: {
-            id?: string;
-            name?: string;
-            email?: string;
-            role?: string;
+            id: string;
+            name: string;
+            email: string;
+            role: string;
         };
         Event: {
-            id?: string;
-            title?: string;
+            id: string;
+            title: string;
             description?: string;
             /** Format: date-time */
-            startDateTime?: string;
+            startDateTime: string;
             /** Format: date-time */
-            endDateTime?: string;
-            hostId?: string;
+            endDateTime: string;
+            hostId: string;
         };
         Booking: {
-            id?: string;
-            userId?: string;
-            eventId?: string;
+            id: string;
+            userId: string;
+            eventId: string;
         };
     };
     responses: never;
@@ -167,14 +167,14 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @example John Doe */
-                    name?: string;
+                    name: string;
                     /** @example john.doe@example.com */
-                    email?: string;
+                    email: string;
                     /**
                      * @example host
                      * @enum {string}
                      */
-                    role?: "host" | "attendee";
+                    role: "host" | "attendee";
                 };
             };
         };
@@ -334,20 +334,20 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @example Rock Concert */
-                    title?: string;
+                    title: string;
                     /** @example An amazing rock concert! */
                     description?: string;
                     /**
                      * Format: date-time
                      * @example 2025-01-19T19:00:00Z
                      */
-                    startDateTime?: string;
+                    startDateTime: string;
                     /**
                      * Format: date-time
                      * @example 2025-01-19T23:00:00Z
                      */
-                    endDateTime?: string;
-                    hostId?: string;
+                    endDateTime: string;
+                    hostId: string;
                 };
             };
         };
@@ -469,8 +469,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    userId?: string;
-                    eventId?: string;
+                    userId: string;
+                    eventId: string;
                 };
             };
         };

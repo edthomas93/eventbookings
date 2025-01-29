@@ -16,6 +16,10 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - name
+                - email
+                - role
               properties:
                 name:
                   type: string
@@ -155,6 +159,11 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - title
+                - startDateTime
+                - endDateTime
+                - hostId
               properties:
                 title:
                   type: string
@@ -283,6 +292,9 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - userId
+                - eventId
               properties:
                 userId:
                   type: string
@@ -315,6 +327,11 @@ components:
   schemas:
     User:
       type: object
+      required:
+        - id
+        - name
+        - email
+        - role
       properties:
         id:
           type: string
@@ -326,6 +343,12 @@ components:
           type: string
     Event:
       type: object
+      required:
+        - id
+        - title
+        - startDateTime
+        - endDateTime
+        - hostId
       properties:
         id:
           type: string
@@ -343,6 +366,10 @@ components:
           type: string
     Booking:
       type: object
+      required:
+        - id
+        - userId
+        - eventId
       properties:
         id:
           type: string
