@@ -8,19 +8,21 @@
     "docker:up": "docker-compose up --build",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
-    "generate:api": "npx openapi-typescript definitions/openapi.yaml --output src/api-types.ts",
+    "generate:api": "npx openapi-typescript definitions/openapi.yaml --output src/types/api-types.ts",
     "start": "npm run build && node ./dist/index.js",
-    "test": "node_modules/.bin/jest  --forceExit"
+    "test": "jest --runInBand --verbose --forceExit"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
     "sqlite3": "^5.1.7",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
