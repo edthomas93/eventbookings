@@ -16,8 +16,10 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "openapi-validator-middleware": "^3.2.6",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
@@ -26,8 +28,10 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^22.10.7",
     "@types/sequelize": "^4.28.20",
     "jest": "^29.7.0",
