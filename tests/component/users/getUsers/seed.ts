@@ -1,4 +1,6 @@
-import { sequelize, User, Event, Booking } from '../../../src/database';
+import { User } from '../../../../src/models/users';
+import { Booking } from '../../../../src/models/bookings';
+import { Event } from '../../../../src/models/events';
 
 const hostId = '6c9ec223-5b59-4794-b553-7573d3d04e0f';
 const attendeeId = 'd7bd53c7-60ba-4603-84c8-1183b948d61e';

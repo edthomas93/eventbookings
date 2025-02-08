@@ -1,12 +1,13 @@
-import { User } from '../../database';
-import { ServerError } from '../../errors/errors';
+import { UserRepository } from '../../repositories/user';
 
-const getUsers = async () => {
-  try {
-    return User.findAll();
-  } catch (error) {
-    throw new ServerError('An unexpected error occurred');
+export class GetUsersController {
+  private userRepository: UserRepository;
+
+  constructor(userRepository: UserRepository) {
+    this.userRepository = userRepository;
   }
-};
 
-export { getUsers };
+  async execute() {
+    return this.userRepository.listWhere({});
+  }
+}

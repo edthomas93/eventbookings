@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { upSeedDB, downSeedDB } from './seed';
-import { Users } from '../../../src/types/api'
+import { Users } from '../../../../src/types/api';
+import { error } from 'console';
 
 const BASE_URL = 'http://localhost:3001/users';
 
@@ -22,12 +23,17 @@ describe('POST /users', () => {
 
   describe('Success', () => {
     test('Creates attendee user', async () => {
-      const { status, data } = await axios.post(BASE_URL, reqBody);
+      try {
+        const { status, data } = await axios.post(BASE_URL, reqBody);
 
-      expect(status).toBe(201);
-      expect(data.name).toEqual(reqBody.name);
-      expect(data.email).toEqual(reqBody.email);
-      expect(data.role).toEqual(reqBody.role);
+        expect(status).toBe(201);
+        expect(data.name).toEqual(reqBody.name);
+        expect(data.email).toEqual(reqBody.email);
+        expect(data.role).toEqual(reqBody.role);
+      } catch (error) {
+        console.log("ERROR >>>>>>>>", error);
+        throw error;
+      }
     });
 
     test('Creates host user', async () => {

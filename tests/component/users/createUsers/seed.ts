@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { User } from '../../../src/database';
+import { User } from '../../../../src/models/users';
 
 const hostId = 'afe9f901-d0cf-48f9-8730-09b55c679806';
 
