@@ -2,9 +2,14 @@ import { paths, components } from './api-types';
 
 type UsersResponse = components['schemas']['User'];
 
+export interface Auth {
+  RegisterReqBody: paths['/auth/register']['post']['requestBody']['content']['application/json'];
+  RegisterResBody: paths['/auth/register']['post']['responses']['201']['content']['application/json'];
+  LoginReqBody: paths['/auth/login']['post']['requestBody']['content']['application/json'];
+  LoginResBody: paths['/auth/login']['post']['responses']['200']['content']['application/json'];
+}
+
 export interface Users {
-  PostReqBody: paths['/auth/register']['post']['requestBody']['content']['application/json'];
-  PostResBody: UsersResponse;
   ListResBody: UsersResponse[];
   GetResBody: UsersResponse;
   PatchReqBody: paths['/users/{id}']['patch']['requestBody']['content']['application/json'];

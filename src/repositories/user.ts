@@ -1,5 +1,5 @@
 import { User } from "../models/users";
-import { Users } from "../types/api";
+import { Auth } from "../types/api";
 
 export class UserRepository {
   async listWhere(where: Record<any, any>): Promise<User[]> {
@@ -10,7 +10,7 @@ export class UserRepository {
     return User.findByPk(userId);
   }
 
-  async createUser(userData: Users['PostReqBody'] & { id: string }): Promise<User> {
+  async createUser(userData: Auth['RegisterReqBody'] & { id: string }): Promise<User> {
     return User.create(userData);
   }
 

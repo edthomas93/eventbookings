@@ -22,7 +22,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/AuthRegisterResponse'
         '400':
           description: Bad Request
           content:
@@ -48,7 +48,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
+                $ref: '#/components/schemas/AuthLoginResponse'
         '400':
           description: Bad Request (e.g., invalid credentials)
           content:
@@ -340,13 +340,22 @@ components:
           example: john.doe@example.com
         password:
           type: string
-          format: password
           minLength: 8
-          example: mySecurePassword123
+          maxLength: 50
+          pattern: '^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$'
+          example: MySecurePass123
         role:
           type: string
           enum: [host, attendee]
           example: host
+    AuthRegisterResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
     AuthLoginRequest:
       type: object
       required:
@@ -362,7 +371,7 @@ components:
           type: string
           format: password
           example: mySecurePassword123
-    AuthResponse:
+    AuthLoginResponse:
       type: object
       properties:
         token:

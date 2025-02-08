@@ -140,16 +140,18 @@ export interface components {
              * @example john.doe@example.com
              */
             email: string;
-            /**
-             * Format: password
-             * @example mySecurePassword123
-             */
+            /** @example MySecurePass123 */
             password: string;
             /**
              * @example host
              * @enum {string}
              */
             role: "host" | "attendee";
+        };
+        AuthRegisterResponse: {
+            user?: components["schemas"]["User"];
+            /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
+            token?: string;
         };
         AuthLoginRequest: {
             /**
@@ -163,7 +165,7 @@ export interface components {
              */
             password: string;
         };
-        AuthResponse: {
+        AuthLoginResponse: {
             /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
             token?: string;
         };
@@ -221,7 +223,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["User"];
+                    "application/json": components["schemas"]["AuthRegisterResponse"];
                 };
             };
             /** @description Bad Request */
@@ -254,7 +256,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AuthResponse"];
+                    "application/json": components["schemas"]["AuthLoginResponse"];
                 };
             };
             /** @description Bad Request (e.g., invalid credentials) */
