@@ -1,11 +1,13 @@
-import { Op } from 'sequelize';
 import { User } from '../../../../src/models/users';
+import { AuthService } from '../../../../src/services/auth';
 
-const hostId = 'afe9f901-d0cf-48f9-8730-09b55c679806';
+export const hostId = 'cd5b95e8-6a6c-4bb2-9ab0-998f7cbb58c8';
+export const password = 'Password1234';
 
 const upSeedDB = async () => {
   try {
-    await User.create({ id: hostId, name: 'John Doe', email: 'ed@example.com', role: 'host', password: 'Password1234' });
+    const hashedPassword = await new AuthService().hashPassword(password);
+    await User.create({ id: hostId, name: 'John Doe', email: 'ed@example.com', role: 'host', password: hashedPassword });
     console.log('Database seeded successfully.');
   } catch (error) {
     console.error('Error seeding database:', error);
@@ -16,10 +18,7 @@ const downSeedDB = async () => {
   try {
     await User.destroy({
       where: {
-        [Op.or]: [
-          { id: hostId },
-          { name: { [Op.in]: ['Ed Thomas'] } }
-        ]
+        id: hostId,
       },
     });
   } catch (error) {

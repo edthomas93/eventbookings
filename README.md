@@ -28,61 +28,60 @@ This system allows two types of users:
 
 ## Progress
 
-### 1. Set up repository ✅
-- Initialized a Git repository.
-- Configured `.gitignore` to exclude sensitive files like `.env` and unnecessary files like `node_modules`.
-- Set up a basic `README` file with project information.
+### 1. Set up repository
+- Initialized a Git repository. ✅
+- Configured `.gitignore` to exclude sensitive files like `.env` and unnecessary files like `node_modules`. ✅
+- Set up a basic `README` file with project information. ✅
 
-### 2. Set up DB, basic route, and tests ✅
-- Configured Sequelize with **PostgreSQL** as the database (replacing SQLite).
-- Created the database schema for `Users`, `Events`, and `Bookings`.
-- Set up migrations for creating and maintaining the database schema.
-- Updated seed scripts for `upSeedDB` and `downSeedDB` to work with PostgreSQL.
-- Set up a basic route (`GET /users`) and tested it with seeded data.
-- Installed and configured Jest for unit and integration tests.
+### 2. Set up DB, basic route, and tests
+- Configured Sequelize with **PostgreSQL** as the database. ✅
+- Created the database schema for `Users`, `Events`, and `Bookings`. ✅
+- Set up migrations for creating and maintaining the database schema. ✅
+- Updated seed scripts for `upSeedDB` and `downSeedDB` to work with PostgreSQL. ✅
+- Set up a basic route (`GET /users`) and tested it with seeded data. ✅
+- Installed and configured Jest for unit and integration tests.✅
 
 ### 3. Containerize the Application ✅
-- Created a `Dockerfile` for the Node.js app.
-- Set up `docker-compose.yml` to include:
+- Created a `Dockerfile` for the Node.js app. ✅
+- Set up `docker-compose.yml` to include: ✅
   - The Node.js application.
   - PostgreSQL database.
   - Exposed ports for local testing and development.
-- Configured commands for running and stopping the Docker environment in `package.json`.
+- Configured commands for running and stopping the Docker environment in `package.json`. ✅
 
-### 4. Add all CRUD routes
-#### 4.1 Users
-- `POST /users`: Create a user with validation for fields like email and role.
-- `GET /users`: Retrieve all users with optional filters (e.g., by role).
+### 4. Add authentication
+- Implement user registration (`POST /auth/register`). ✅
+- Implement user login with JWT (`POST /auth/login`). ✅
+- Protect sensitive routes with JWT middleware.
+- Role-based access control:
+  - Hosts can create, update, and delete events.
+  - Attendees can book events and view their bookings.
+
+### 5. Add all CRUD routes
+#### 5.1 Users
+- `GET /users`: Retrieve all users with optional filters (e.g., by role). ✅
 - `GET /users/:id`: Retrieve a specific user by their ID.
 - `PUT /users/:id`: Update user details (e.g., name, email).
 - `DELETE /users/:id`: Delete a user and cascade related entities (e.g., hosted events).
 
-#### 4.2 Events
+#### 5.2 Events
 - `POST /events`: Allow hosts to create an event, with fields like `startDateTime` and `endDateTime`.
 - `GET /events`: Retrieve all events with filters (e.g., by date or host) and pagination.
 - `GET /events/:id`: Retrieve a specific event by its ID.
 - `PUT /events/:id`: Update event details (e.g., description or date).
 - `DELETE /events/:id`: Delete an event and cascade bookings.
 
-#### 4.3 Bookings
+#### 5.3 Bookings
 - `POST /bookings`: Allow users to book an event.
 - `GET /bookings`: Retrieve all bookings with pagination.
 - `GET /bookings/:id`: Retrieve a specific booking.
 - `DELETE /bookings/:id`: Cancel a booking.
 
-#### 4.4 Filtering, Pagination, Sorting
+#### 5.4 Filtering, Pagination, Sorting
 - Add query parameters like `?limit=10&offset=0&sort=date&order=asc` for:
   - Users
   - Events
   - Bookings
-
-### 5. Add authentication
-- Implement user registration (`POST /auth/register`).
-- Implement user login with JWT (`POST /auth/login`).
-- Protect sensitive routes with JWT middleware.
-- Role-based access control:
-  - Hosts can create, update, and delete events.
-  - Attendees can book events and view their bookings.
 
 ### 6. Add email notifications
 - Kafka service to handle email notifications to decouple, for scalability and fault tolerance.
@@ -106,6 +105,7 @@ Manages application users.
 | `name`      | STRING | Name of the user                     |
 | `email`     | STRING | Email address (unique)               |
 | `role`      | ENUM   | Role of the user: "host" or "attendee"|
+| `password`	| STRING | Hashed password for authentication    |
 
 ---
 

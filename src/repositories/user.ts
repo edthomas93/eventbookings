@@ -14,6 +14,13 @@ export class UserRepository {
     return User.create(userData);
   }
 
+  async getUserWithPassword(where: Record<any, any>): Promise<User | undefined> {
+    const user = await User.scope('withPassword').findOne({ where });
+    if (!user) return undefined;
+
+    return user;
+  }
+
   async updateUser(userId: string, updateData: Partial<User>): Promise<User | undefined> {
     const user = await User.findByPk(userId);
     if (!user) return undefined;

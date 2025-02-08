@@ -369,8 +369,7 @@ components:
           example: john.doe@example.com
         password:
           type: string
-          format: password
-          example: mySecurePassword123
+          example: MySecurePass123
     AuthLoginResponse:
       type: object
       properties:

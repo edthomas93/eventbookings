@@ -159,10 +159,7 @@ export interface components {
              * @example john.doe@example.com
              */
             email: string;
-            /**
-             * Format: password
-             * @example mySecurePassword123
-             */
+            /** @example MySecurePass123 */
             password: string;
         };
         AuthLoginResponse: {
