@@ -4,42 +4,59 @@ info:
   description: API for managing users, events, and bookings.
   version: 1.0.0
 paths:
-  /users:
+  /auth/register:
     post:
-      tags: 
-        - Users
-      summary: Create a new user
-      operationId: createUser
+      tags:
+        - Auth
+      summary: Register a new user
+      operationId: registerUser
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - name
-                - email
-                - role
-              properties:
-                name:
-                  type: string
-                  example: John Doe
-                email:
-                  type: string
-                  example: john.doe@example.com
-                role:
-                  type: string
-                  enum: [host, attendee]
-                  example: host
+              $ref: '#/components/schemas/AuthRegisterRequest'
       responses:
         '201':
-          description: User created successfully
+          description: User registered successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login a user
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthLoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad Request (e.g., invalid credentials)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users:
     get:
       tags: 
         - Users
@@ -117,6 +134,8 @@ paths:
                   example: Updated Name
                 email:
                   type: string
+                  format: email
+                  pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
                   example: updated.email@example.com
                 role:
                   type: string
@@ -158,29 +177,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - title
-                - startDateTime
-                - endDateTime
-                - hostId
-              properties:
-                title:
-                  type: string
-                  example: Rock Concert
-                description:
-                  type: string
-                  example: An amazing rock concert!
-                startDateTime:
-                  type: string
-                  format: date-time
-                  example: 2025-01-19T19:00:00Z
-                endDateTime:
-                  type: string
-                  format: date-time
-                  example: 2025-01-19T23:00:00Z
-                hostId:
-                  type: string
+              $ref: '#/components/schemas/Event'
       responses:
         '201':
           description: Event created successfully
@@ -190,6 +187,10 @@ paths:
                 $ref: '#/components/schemas/Event'
         '400':
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       tags: 
         - Events
@@ -291,15 +292,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - userId
-                - eventId
-              properties:
-                userId:
-                  type: string
-                eventId:
-                  type: string
+              $ref: '#/components/schemas/Booking'
       responses:
         '201':
           description: Booking created successfully
@@ -309,6 +302,10 @@ paths:
                 $ref: '#/components/schemas/Booking'
         '400':
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       tags: 
         - Bookings
@@ -325,13 +322,54 @@ paths:
                   $ref: '#/components/schemas/Booking'
 components:
   schemas:
-    User:
+    AuthRegisterRequest:
       type: object
       required:
-        - id
         - name
         - email
+        - password
         - role
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          example: john.doe@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: mySecurePassword123
+        role:
+          type: string
+          enum: [host, attendee]
+          example: host
+    AuthLoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+          example: john.doe@example.com
+        password:
+          type: string
+          format: password
+          example: mySecurePassword123
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    User:
+      type: object
       properties:
         id:
           type: string
@@ -341,6 +379,7 @@ components:
           type: string
         role:
           type: string
+          enum: [host, attendee]
     Event:
       type: object
       required:
@@ -377,3 +416,9 @@ components:
           type: string
         eventId:
           type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: 'Invalid credentials'

@@ -3,7 +3,7 @@ import { paths, components } from './api-types';
 type UsersResponse = components['schemas']['User'];
 
 export interface Users {
-  PostReqBody: paths['/users']['post']['requestBody']['content']['application/json'];
+  PostReqBody: paths['/auth/register']['post']['requestBody']['content']['application/json'];
   PostResBody: UsersResponse;
   ListResBody: UsersResponse[];
   GetResBody: UsersResponse;

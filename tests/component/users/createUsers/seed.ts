@@ -5,7 +5,7 @@ const hostId = 'afe9f901-d0cf-48f9-8730-09b55c679806';
 
 const upSeedDB = async () => {
   try {
-    await User.create({ id: hostId, name: 'John Doe', email: 'ed@example.com', role: 'host' });
+    await User.create({ id: hostId, name: 'John Doe', email: 'ed@example.com', role: 'host', password: 'Password1234' });
     console.log('Database seeded successfully.');
   } catch (error) {
     console.error('Error seeding database:', error);

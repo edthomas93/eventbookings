@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { upSeedDB, downSeedDB } from './seed';
 import { Users } from '../../../../src/types/api';
-import { error } from 'console';
 
 const BASE_URL = 'http://localhost:3001/users';
 
@@ -9,6 +8,7 @@ const reqBody: Users['PostReqBody'] = {
   name: 'Ed Thomas',
   email: 'ed@ed.com',
   role: 'attendee',
+  password: 'Password1234',
 };
 
 describe('POST /users', () => {
@@ -61,17 +61,19 @@ describe('POST /users', () => {
       expect(data.message).toEqual('Email already in use');
     });
 
-    test('Cannot create a user with an invalid body', async () => {
+    // REMOVED ROUTE FROM API DOCUMENTATION SO NO VALIDATION, BUILDING REGISTER ROUTE INSTEAD
 
-      const body = {
-        email: 'ed@example.com',
-      };
+    // test('Cannot create a user with an invalid body', async () => {
 
-      const { status, data } = await axios.post(BASE_URL, body, { validateStatus: () => true });
+    //   const body = {
+    //     email: 'ed@example.com',
+    //   };
 
-      expect(status).toEqual(400);
-      expect(data.details).toEqual([{ message: "should have required property 'name'" }, { message: "should have required property 'role'" }]);
-      expect(data.error).toEqual('Validation failed');
-    });
+    //   const { status, data } = await axios.post(BASE_URL, body, { validateStatus: () => true });
+
+    //   expect(status).toEqual(400);
+    //   expect(data.details).toEqual([{ message: "should have required property 'name'" }, { message: "should have required property 'role'" }]);
+    //   expect(data.error).toEqual('Validation failed');
+    // });
   });
 });

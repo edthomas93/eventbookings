@@ -4,6 +4,40 @@
  */
 
 export interface paths {
+    "/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register a new user */
+        post: operations["registerUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Login a user */
+        post: operations["loginUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users": {
         parameters: {
             query?: never;
@@ -14,8 +48,7 @@ export interface paths {
         /** Retrieve all users */
         get: operations["getUsers"];
         put?: never;
-        /** Create a new user */
-        post: operations["createUser"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -99,11 +132,47 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        User: {
-            id: string;
+        AuthRegisterRequest: {
+            /** @example John Doe */
             name: string;
+            /**
+             * Format: email
+             * @example john.doe@example.com
+             */
             email: string;
-            role: string;
+            /**
+             * Format: password
+             * @example mySecurePassword123
+             */
+            password: string;
+            /**
+             * @example host
+             * @enum {string}
+             */
+            role: "host" | "attendee";
+        };
+        AuthLoginRequest: {
+            /**
+             * Format: email
+             * @example john.doe@example.com
+             */
+            email: string;
+            /**
+             * Format: password
+             * @example mySecurePassword123
+             */
+            password: string;
+        };
+        AuthResponse: {
+            /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
+            token?: string;
+        };
+        User: {
+            id?: string;
+            name?: string;
+            email?: string;
+            /** @enum {string} */
+            role?: "host" | "attendee";
         };
         Event: {
             id: string;
@@ -120,6 +189,10 @@ export interface components {
             userId: string;
             eventId: string;
         };
+        ErrorResponse: {
+            /** @example Invalid credentials */
+            error?: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -129,6 +202,72 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    registerUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthRegisterRequest"];
+            };
+        };
+        responses: {
+            /** @description User registered successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    loginUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthLoginRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful login */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+            /** @description Bad Request (e.g., invalid credentials) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getUsers: {
         parameters: {
             query?: {
@@ -153,47 +292,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["User"][];
                 };
-            };
-        };
-    };
-    createUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @example John Doe */
-                    name: string;
-                    /** @example john.doe@example.com */
-                    email: string;
-                    /**
-                     * @example host
-                     * @enum {string}
-                     */
-                    role: "host" | "attendee";
-                };
-            };
-        };
-        responses: {
-            /** @description User created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"];
-                };
-            };
-            /** @description Bad Request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
@@ -267,7 +365,10 @@ export interface operations {
                 "application/json": {
                     /** @example Updated Name */
                     name?: string;
-                    /** @example updated.email@example.com */
+                    /**
+                     * Format: email
+                     * @example updated.email@example.com
+                     */
                     email?: string;
                     /**
                      * @example attendee
@@ -332,23 +433,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    /** @example Rock Concert */
-                    title: string;
-                    /** @example An amazing rock concert! */
-                    description?: string;
-                    /**
-                     * Format: date-time
-                     * @example 2025-01-19T19:00:00Z
-                     */
-                    startDateTime: string;
-                    /**
-                     * Format: date-time
-                     * @example 2025-01-19T23:00:00Z
-                     */
-                    endDateTime: string;
-                    hostId: string;
-                };
+                "application/json": components["schemas"]["Event"];
             };
         };
         responses: {
@@ -366,7 +451,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
@@ -468,10 +555,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    userId: string;
-                    eventId: string;
-                };
+                "application/json": components["schemas"]["Booking"];
             };
         };
         responses: {
@@ -489,7 +573,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
