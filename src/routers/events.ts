@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import inputValidation from 'openapi-validator-middleware';
 
 import { CreateEventController } from '../controllers/events/createEvents';
-// import { ListEventsController } from '../controllers/events/listEvents';
+import { ListEventsController } from '../controllers/events/listEvents';
 import { EventRepository } from '../repositories/event';
 import { authMiddleware } from '../middleware/authentication';
 
@@ -18,14 +18,15 @@ router.post('/', authMiddleware, inputValidation.validate, async (req: Request, 
   }
 });
 
-// router.get('/', async (_: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const listEventController = new ListEventsController(new EventRepository());
-//     const events = await listEventController.listEvents();
-//     res.status(200).json(events);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+// No authorization required
+router.get('/', async (_: Request, res: Response, next: NextFunction) => {
+  try {
+    const listEventController = new ListEventsController(new EventRepository());
+    const events = await listEventController.listEvents();
+    res.status(200).json(events);
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;
