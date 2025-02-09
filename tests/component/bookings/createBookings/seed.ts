@@ -8,8 +8,8 @@ export const attendeeId = 'fcb84b76-79d7-45af-8ad6-4ae819e77bf6';
 export const rockEventId = 'a2e19700-e7a4-46db-abbe-398baaf42fd6';
 export const jazzEventId = 'b837d424-38dd-4a2c-a793-c674954676e9';
 export const glastonburyEventId = 'a1f74b95-31f6-4210-a42e-4e3bd8fe6820';
+export const wildernessEventId = '8447d78c-6b7e-4d32-b009-0b9bed41ecb8';
 const bookingId1 = 'd9e7d816-958f-4463-aa16-5814d5c62e79';
-const bookingId2 = 'e7e8c054-d9c7-411e-8e05-917514e2bac5';
 
 const upSeedDB = async () => {
   try {
@@ -23,6 +23,7 @@ const upSeedDB = async () => {
       hostId: host.id,
       startDateTime: new Date('2025-01-19T19:00:00'),
       endDateTime: new Date('2025-01-20T00:00:00'),
+      capacity: 10,
     });
 
     await Event.create({
@@ -32,6 +33,7 @@ const upSeedDB = async () => {
       hostId: host.id,
       startDateTime: new Date('2024-02-15T19:30:00'),
       endDateTime: new Date('2024-02-15T23:30:00'), // PAST EVENT
+      capacity: 15,
     });
 
     await Event.create({
@@ -41,6 +43,18 @@ const upSeedDB = async () => {
       hostId: host.id,
       startDateTime: new Date('2026-06-15T10:30:00'),
       endDateTime: new Date('2026-06-20T23:30:00'),
+      capacity: 20,
+    });
+
+    await Event.create({
+      id: wildernessEventId,
+      title: 'Wilderness',
+      description: 'Get in the field and get dancing!',
+      hostId: host.id,
+      startDateTime: new Date('2026-06-15T10:30:00'),
+      endDateTime: new Date('2026-06-20T23:30:00'),
+      capacity: 20,
+      numberOfAttendees: 20,
     });
 
     await Booking.create({ id: bookingId1, userId: attendee.id, eventId: event1.id });
@@ -59,6 +73,7 @@ const downSeedDB = async () => {
           rockEventId,
           jazzEventId,
           glastonburyEventId,
+          wildernessEventId,
         ],
       },
     });
@@ -69,6 +84,7 @@ const downSeedDB = async () => {
           rockEventId,
           jazzEventId,
           glastonburyEventId,
+          wildernessEventId,
         ],
       },
     });

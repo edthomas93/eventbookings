@@ -333,6 +333,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
     get:
       tags: 
@@ -429,6 +435,7 @@ components:
         - title
         - startDateTime
         - endDateTime
+        - capacity
       properties:
         title:
           type: string
@@ -440,6 +447,9 @@ components:
         endDateTime:
           type: string
           format: date-time
+        capacity:
+          type: integer
+          minimum: 1
     Event:
       type: object
       required:
@@ -448,6 +458,7 @@ components:
         - startDateTime
         - endDateTime
         - hostId
+        - capacity
       properties:
         id:
           type: string
@@ -463,6 +474,16 @@ components:
           format: date-time
         hostId:
           type: string
+        capacity:
+          type: integer
+          minimum: 1
+          example: 100
+        numberOfAttendees:
+          type: integer
+          minimum: 0
+          readOnly: true
+          example: 25
+
     CreateBookingRequest:
       type: object
       required:

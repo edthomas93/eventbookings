@@ -8,6 +8,8 @@ export class Event extends Model {
   declare startDateTime: Date;
   declare endDateTime: Date;
   declare hostId: string;
+  declare capacity: number;
+  declare numberOfAttendees: number;
 }
 
 Event.init(
@@ -35,6 +37,15 @@ Event.init(
     hostId: {
       type: DataTypes.UUID,
       allowNull: false,
+    },
+    capacity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    numberOfAttendees: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {

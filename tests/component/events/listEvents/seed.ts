@@ -18,6 +18,7 @@ const upSeedDB = async () => {
       hostId: host.id,
       startDateTime: new Date('2025-01-19T19:00:00'),
       endDateTime: new Date('2025-01-20T00:00:00'),
+      capacity: 10,
     });
 
     await Event.create({
@@ -27,6 +28,7 @@ const upSeedDB = async () => {
       hostId: host.id,
       startDateTime: new Date('2025-02-15T19:30:00'),
       endDateTime: new Date('2025-02-15T23:30:00'),
+      capacity: 10,
     });
 
     console.log('Database seeded successfully.');

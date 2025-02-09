@@ -16,6 +16,7 @@ const validEventBody: Events['PostReqBody'] = {
   description: 'A conference for tech enthusiasts',
   startDateTime: '2025-06-15T09:00:00Z',
   endDateTime: '2025-06-15T17:00:00Z',
+  capacity: 10,
 };
 
 describe('POST /events', () => {
@@ -134,6 +135,7 @@ describe('POST /events', () => {
         title: '',
         startDateTime: 'invalid-date',
         endDateTime: '2025-06-15T17:00:00Z',
+        capacity: 100,
       };
 
       const { status, data } = await axios.post(BASE_URL, invalidBody, {

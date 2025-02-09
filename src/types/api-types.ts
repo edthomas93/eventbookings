@@ -180,6 +180,7 @@ export interface components {
             startDateTime: string;
             /** Format: date-time */
             endDateTime: string;
+            capacity: number;
         };
         Event: {
             id: string;
@@ -190,6 +191,10 @@ export interface components {
             /** Format: date-time */
             endDateTime: string;
             hostId: string;
+            /** @example 100 */
+            capacity: number;
+            /** @example 25 */
+            readonly numberOfAttendees?: number;
         };
         CreateBookingRequest: {
             eventId: string;
@@ -613,6 +618,15 @@ export interface operations {
             };
             /** @description Forbidden */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { upSeedDB, downSeedDB, hostId, attendeeId, glastonburyEventId, rockEventId, jazzEventId } from './seed';
+import { upSeedDB, downSeedDB, hostId, attendeeId, glastonburyEventId, rockEventId, jazzEventId, wildernessEventId } from './seed';
 import { Bookings } from '../../../../src/types/api';
 import { AuthService } from '../../../../src/services/auth';
 
@@ -89,6 +89,16 @@ describe('POST /bookings', () => {
 
       expect(status).toEqual(409);
       expect(data.message).toEqual('Cannot book an event that has already ended');
+    });
+
+    test('Cannot create a booking if event is at full capacity', async () => {
+      const { status, data } = await axios.post(BASE_URL, { eventId: wildernessEventId }, {
+        headers: { Authorization: `Bearer ${attendeeToken}` },
+        validateStatus: () => true,
+      });
+
+      expect(status).toEqual(409);
+      expect(data.message).toEqual('Event capacity exceeded');
     });
 
     test('Cannot create a booking with an invalid request body', async () => {
