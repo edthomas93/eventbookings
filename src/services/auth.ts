@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
+export const JWT_SECRET = process.env.JWT_SECRET || "default_secret";
 
 export class AuthService {
   async hashPassword(password: string): Promise<string> {
