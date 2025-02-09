@@ -172,6 +172,13 @@ paths:
         - Events
       summary: Create a new event
       operationId: createEvent
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Bearer token for authentication (Only hosts can create events)
       requestBody:
         required: true
         content:
@@ -191,6 +198,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    
     get:
       tags: 
         - Events
@@ -287,12 +301,19 @@ paths:
         - Bookings
       summary: Create a booking
       operationId: createBooking
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Bearer token for authentication
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Booking'
+              $ref: '#/components/schemas/CreateBookingRequest'
       responses:
         '201':
           description: Booking created successfully
@@ -306,11 +327,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
     get:
       tags: 
         - Bookings
       summary: Retrieve all bookings
       operationId: getBookings
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+          description: Bearer token for authentication
       responses:
         '200':
           description: List of bookings
@@ -427,6 +462,13 @@ components:
           type: string
           format: date-time
         hostId:
+          type: string
+    CreateBookingRequest:
+      type: object
+      required:
+        - eventId
+      properties:
+        eventId:
           type: string
     Booking:
       type: object

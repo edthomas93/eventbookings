@@ -191,6 +191,9 @@ export interface components {
             endDateTime: string;
             hostId: string;
         };
+        CreateBookingRequest: {
+            eventId: string;
+        };
         Booking: {
             id: string;
             userId: string;
@@ -434,7 +437,10 @@ export interface operations {
     createEvent: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Bearer token for authentication (Only hosts can create events) */
+                Authorization: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -455,6 +461,15 @@ export interface operations {
             };
             /** @description Bad Request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -536,7 +551,10 @@ export interface operations {
     getBookings: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Bearer token for authentication */
+                Authorization: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -556,13 +574,16 @@ export interface operations {
     createBooking: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Bearer token for authentication */
+                Authorization: string;
+            };
             path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Booking"];
+                "application/json": components["schemas"]["CreateBookingRequest"];
             };
         };
         responses: {
@@ -577,6 +598,15 @@ export interface operations {
             };
             /** @description Bad Request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
