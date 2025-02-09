@@ -173,6 +173,14 @@ export interface components {
             /** @enum {string} */
             role?: "host" | "attendee";
         };
+        CreateEventRequest: {
+            title: string;
+            description?: string;
+            /** Format: date-time */
+            startDateTime: string;
+            /** Format: date-time */
+            endDateTime: string;
+        };
         Event: {
             id: string;
             title: string;
@@ -432,7 +440,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Event"];
+                "application/json": components["schemas"]["CreateEventRequest"];
             };
         };
         responses: {

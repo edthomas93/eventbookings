@@ -27,6 +27,7 @@ const initialiseApp = async (): Promise<Express> => {
 
   app.use('/auth', routers.auth);
   app.use('/users', routers.users);
+  app.use('/events', routers.events);
 
   app.use(errorHandler);
 

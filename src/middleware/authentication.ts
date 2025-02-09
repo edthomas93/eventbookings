@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { JWT_SECRET } from '../services/auth';
+import { UserDetails } from '../types/auth';
 
-type UserDetails = { userId: string; role: 'host' | 'attendee' };
-type DecodedToken = UserDetails & { exp: number, iat: number };
+type DecodedToken = UserDetails & { exp: number; iat: number };
 
 export interface AuthenticatedRequest extends Request {
   userDetails?: UserDetails;
@@ -14,7 +14,8 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    res.status(401).json({ message: 'Unauthorized: No token provided' });
+    return;
   }
 
   const token = authHeader.split(' ')[1];
@@ -22,13 +23,15 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
 
-    if (!decoded.userId || !decoded.userId || !decoded.exp) {
-      return res.status(401).json({ message: 'Unauthorized: Token is missing required attributes' });
+    if (!decoded.userId || !decoded.role || !decoded.exp) {
+      res.status(401).json({ message: 'Unauthorized: Token is missing required attributes' });
+      return;
     }
 
     req.userDetails = { userId: decoded.userId, role: decoded.role };
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Unauthorized: Invalid token' });
+    res.status(401).json({ message: 'Unauthorized: Invalid token' });
+    return;
   }
 };

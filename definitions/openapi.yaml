@@ -177,7 +177,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Event'
+              $ref: '#/components/schemas/CreateEventRequest'
       responses:
         '201':
           description: Event created successfully
@@ -388,6 +388,23 @@ components:
         role:
           type: string
           enum: [host, attendee]
+    CreateEventRequest:
+      type: object
+      required:
+        - title
+        - startDateTime
+        - endDateTime
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        startDateTime:
+          type: string
+          format: date-time
+        endDateTime:
+          type: string
+          format: date-time
     Event:
       type: object
       required:

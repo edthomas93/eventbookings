@@ -1,6 +1,6 @@
 import { UserRepository } from '../../repositories/user';
 
-export class GetUsersController {
+export class ListUsersController {
   private userRepository: UserRepository;
 
   constructor(userRepository: UserRepository) {
