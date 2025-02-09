@@ -52,10 +52,10 @@ This system allows two types of users:
 ### 4. Add authentication
 - Implement user registration (`POST /auth/register`). ✅
 - Implement user login with JWT (`POST /auth/login`). ✅
-- Protect sensitive routes with JWT middleware.
+- Protect sensitive routes with JWT middleware. ✅
 - Role-based access control:
-  - Hosts can create, update, and delete events.
-  - Attendees can book events and view their bookings.
+  - Hosts can create, update, and delete events. ✅
+  - Attendees can book events and view their bookings. ✅
 
 ### 5. Add all CRUD routes
 #### 5.1 Users
@@ -65,15 +65,15 @@ This system allows two types of users:
 - `DELETE /users/:id`: Delete a user and cascade related entities (e.g., hosted events).
 
 #### 5.2 Events
-- `POST /events`: Allow hosts to create an event, with fields like `startDateTime` and `endDateTime`.
-- `GET /events`: Retrieve all events with filters (e.g., by date or host) and pagination.
+- `POST /events`: Allow hosts to create an event, with fields like `startDateTime` and `endDateTime`. ✅
+- `GET /events`: Retrieve all events with filters (e.g., by date or host) and pagination. ✅
 - `GET /events/:id`: Retrieve a specific event by its ID.
 - `PUT /events/:id`: Update event details (e.g., description or date).
 - `DELETE /events/:id`: Delete an event and cascade bookings.
 
 #### 5.3 Bookings
-- `POST /bookings`: Allow users to book an event.
-- `GET /bookings`: Retrieve all bookings with pagination.
+- `POST /bookings`: Allow users to book an event. ✅
+- `GET /bookings`: Retrieve all bookings with pagination. ✅
 - `GET /bookings/:id`: Retrieve a specific booking.
 - `DELETE /bookings/:id`: Cancel a booking.
 
@@ -112,14 +112,16 @@ Manages application users.
 #### **Events**
 Tracks events hosted by users.
 
-| Column Name       | Type   | Description                              |
-|-------------------|--------|------------------------------------------|
-| `id`              | UUID   | Primary Key                              |
-| `title`           | STRING | Title of the event                      |
-| `description`     | TEXT   | Description of the event (optional)     |
-| `startDateTime`   | DATE   | Start date and time of the event        |
-| `endDateTime`     | DATE   | End date and time of the event          |
-| `hostId`          | UUID   | Foreign Key referencing `Users(id)`     |
+| Column Name         | Type    | Description                              |
+|---------------------|---------|------------------------------------------|
+| `id`                | UUID    | Primary Key                              |
+| `title`             | STRING  | Title of the event                       |
+| `description`       | TEXT    | Description of the event (optional)      |
+| `startDateTime`     | DATE    | Start date and time of the event         |
+| `endDateTime`       | DATE    | End date and time of the event           |
+| `hostId`            | UUID    | Foreign Key referencing `Users(id)`      |
+| `capacity`          | INTEGER | Maximum number of attendees allowed      |
+| `numberOfAttendees` | INTEGER | Current number of attendees booked       |
 
 ---
 
