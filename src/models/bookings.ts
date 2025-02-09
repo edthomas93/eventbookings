@@ -30,3 +30,5 @@ Booking.init(
     timestamps: true,
   }
 );
+
+export default Booking;

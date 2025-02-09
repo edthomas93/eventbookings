@@ -354,7 +354,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Booking'
+                  $ref: '#/components/schemas/EnrichedBookingResponse'
 components:
   schemas:
     AuthRegisterRequest:
@@ -483,6 +483,22 @@ components:
           type: string
         eventId:
           type: string
+    EnrichedBookingResponse:
+      type: object
+      required:
+        - id
+        - userId
+        - eventId
+        - event
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        eventId:
+          type: string
+        event:
+          $ref: '#/components/schemas/Event'
     ErrorResponse:
       type: object
       properties:

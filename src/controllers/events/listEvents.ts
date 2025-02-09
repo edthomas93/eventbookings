@@ -9,6 +9,7 @@ export class ListEventsController {
   }
 
   async listEvents(): Promise<Event[]> {
+    // TODO: As a host list only your events
     return this.eventRepository.listEventsWhere();
   }
 }

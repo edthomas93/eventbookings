@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import path from 'path';
 
 import routers from './routers';
-import { sequelize } from './database';
+import { sequelize } from './models';
 import errorHandler from './middleware/errorHandler';
 import inputValidation from 'openapi-validator-middleware';
 
@@ -28,6 +28,7 @@ const initialiseApp = async (): Promise<Express> => {
   app.use('/auth', routers.auth);
   app.use('/users', routers.users);
   app.use('/events', routers.events);
+  app.use('/bookings', routers.bookings);
 
   app.use(errorHandler);
 

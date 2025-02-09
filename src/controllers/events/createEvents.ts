@@ -16,6 +16,8 @@ export class CreateEventController {
     this.eventRepository = eventRepository;
   }
 
+  // TODO: Add attribute for booking date (i.e. cannot necessarily book immediately)
+
   async createEvent(eventData: Events['PostReqBody']): Promise<Event> {
     if (this.role !== 'host') {
       throw new ForbiddenError('Only hosts can create events');

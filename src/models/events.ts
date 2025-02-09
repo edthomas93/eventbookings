@@ -44,3 +44,5 @@ Event.init(
     timestamps: true,
   }
 );
+
+export default Event;

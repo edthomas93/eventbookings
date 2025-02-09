@@ -32,7 +32,7 @@ type BookingsResponse = components['schemas']['Event'];
 export interface Bookings {
   PostReqBody: paths['/bookings']['post']['requestBody']['content']['application/json'];
   PostResBody: BookingsResponse;
-  ListResBody: BookingsResponse[];
+  ListResBody: paths['/bookings']['get']['responses']['200']['content']['application/json'];
   GetResBody: BookingsResponse;
   PatchResBody: BookingsResponse;
 }

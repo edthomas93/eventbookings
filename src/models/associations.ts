@@ -1,6 +1,6 @@
-import { User } from './users';
-import { Event } from './events';
-import { Booking } from './bookings';
+import User from './users';
+import Event from './events';
+import Booking from './bookings';
 
 // A user can host multiple events
 User.hasMany(Event, { foreignKey: 'hostId', as: 'hostedEvents' });
@@ -13,5 +13,3 @@ Booking.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 // An event can have multiple bookings
 Event.hasMany(Booking, { foreignKey: 'eventId', as: 'eventBookings' });
 Booking.belongsTo(Event, { foreignKey: 'eventId', as: 'event' });
-
-export { User, Event, Booking };

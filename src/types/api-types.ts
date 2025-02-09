@@ -199,6 +199,12 @@ export interface components {
             userId: string;
             eventId: string;
         };
+        EnrichedBookingResponse: {
+            id: string;
+            userId: string;
+            eventId: string;
+            event: components["schemas"]["Event"];
+        };
         ErrorResponse: {
             /** @example Invalid credentials */
             error?: string;
@@ -566,7 +572,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Booking"][];
+                    "application/json": components["schemas"]["EnrichedBookingResponse"][];
                 };
             };
         };
