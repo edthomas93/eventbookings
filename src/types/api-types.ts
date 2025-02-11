@@ -149,9 +149,9 @@ export interface components {
             role: "host" | "attendee";
         };
         AuthRegisterResponse: {
-            user?: components["schemas"]["User"];
+            user: components["schemas"]["User"];
             /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
-            token?: string;
+            token: string;
         };
         AuthLoginRequest: {
             /**
@@ -164,7 +164,7 @@ export interface components {
         };
         AuthLoginResponse: {
             /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
-            token?: string;
+            token: string;
         };
         User: {
             id?: string;

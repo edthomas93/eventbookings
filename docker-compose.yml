@@ -4,6 +4,7 @@ services:
   app:
     build:
       context: .
+    container_name: eventbookings-app
     ports:
       - "3001:3001"
     environment:

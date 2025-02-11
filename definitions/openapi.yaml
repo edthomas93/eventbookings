@@ -391,6 +391,9 @@ components:
           example: host
     AuthRegisterResponse:
       type: object
+      required:
+        - user
+        - token
       properties:
         user:
           $ref: '#/components/schemas/User'
@@ -413,6 +416,8 @@ components:
           example: MySecurePass123
     AuthLoginResponse:
       type: object
+      required:
+        - token
       properties:
         token:
           type: string
