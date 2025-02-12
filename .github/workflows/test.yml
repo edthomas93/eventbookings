@@ -30,7 +30,7 @@ jobs:
         run: npm i
 
       - name: Start Test Database
-        run: npm run docker:up:local
+        run: npm run docker:up:local &
 
       - name: Run Tests
         run: npm t
