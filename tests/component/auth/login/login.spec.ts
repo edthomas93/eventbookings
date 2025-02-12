@@ -1,10 +1,15 @@
-import axios from 'axios';
+import request from 'supertest';
+import { App } from 'supertest/types';
 import jwt from 'jsonwebtoken';
-
 import { upSeedDB, downSeedDB, password, hostId } from './seed';
 import { Auth } from '../../../../src/types/api';
+import { getTestApp } from '../../../testServer';
 
-const BASE_URL = 'http://localhost:3001/auth/login';
+let app: App;
+
+beforeAll(async () => {
+  app = await getTestApp();
+});
 
 const reqBody: Auth['LoginReqBody'] = {
   email: 'ed@example.com',
@@ -23,12 +28,12 @@ describe('POST /auth/login', () => {
 
   describe('Success', () => {
     test('Password matches, returns access token and JWT contains user info', async () => {
-      const { status, data } = await axios.post(BASE_URL, reqBody, { validateStatus: () => true });
+      const { status, body } = await request(app).post('/auth/login').send(reqBody);
 
       expect(status).toEqual(200);
-      expect(data.token).toBeDefined();
+      expect(body.token).toBeDefined();
 
-      const jwtPayload = jwt.decode(data.token);
+      const jwtPayload = jwt.decode(body.token);
 
       if (jwtPayload && typeof jwtPayload === 'object') {
         expect(jwtPayload.exp).toBeDefined();
@@ -44,28 +49,27 @@ describe('POST /auth/login', () => {
   describe('Failures', () => {
     test('Cannot sign in if email does not exist', async () => {
 
-      const body: Auth['LoginReqBody'] = {
+      const invalidEmailBody: Auth['LoginReqBody'] = {
         email: 'ed@ed.com',
         password: 'akwdkjahwd',
       };
 
-      const { status, data } = await axios.post(BASE_URL, body, { validateStatus: () => true });
+      const { status, body } = await request(app).post('/auth/login').send(invalidEmailBody);
 
       expect(status).toEqual(404);
-      expect(data.message).toEqual(`No user found matching email '${body.email}'`);
+      expect(body.message).toEqual(`No user found matching email '${invalidEmailBody.email}'`);
     });
 
-    test('Cannot create a user with an invalid body', async () => {
-
-      const body: Auth['LoginReqBody'] = {
+    test('Cannot sign in with incorrect password', async () => {
+      const incorrectPasswordBody: Auth['LoginReqBody'] = {
         email: 'ed@example.com',
-        password: 'Password12345', // incorrect password
+        password: 'Password12345',
       };
 
-      const { status, data } = await axios.post(BASE_URL, body, { validateStatus: () => true });
+      const { status, body } = await request(app).post('/auth/login').send(incorrectPasswordBody);
 
       expect(status).toEqual(401);
-      expect(data.message).toEqual('Invalid email or password');
+      expect(body.message).toEqual('Invalid email or password');
     });
   });
 });

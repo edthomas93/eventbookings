@@ -1,10 +1,11 @@
 import request from 'supertest';
+import { App } from 'supertest/types';
 import { upSeedDB, downSeedDB, hostId, attendeeId } from './seed';
 import { AuthService } from '../../../../src/services/auth';
 import { getTestApp } from '../../../testServer';
 import { User } from '../../../../src/models';
 
-let app: any;
+let app: App;
 
 const auth = new AuthService();
 const hostToken = auth.generateToken(hostId, 'host');
@@ -25,14 +26,14 @@ describe('GET /users', () => {
 
   describe('Success', () => {
     test('List users as a host only returns host details', async () => {
-      const response = await request(app)
+      const { status, body } = await request(app)
         .get('/users')
         .set('Authorization', `Bearer ${hostToken}`);
 
-      expect(response.status).toBe(200);
-      expect(response.body.length).toEqual(1);
+      expect(status).toEqual(200);
+      expect(body.length).toEqual(1);
 
-      const users: User[] = response.body;
+      const users: User[] = body;
 
       users.forEach(user => {
         expect(user.password).toBeUndefined();
@@ -42,14 +43,14 @@ describe('GET /users', () => {
     });
 
     test('List users as an attendee only returns attendee details', async () => {
-      const response = await request(app)
+      const { status, body } = await request(app)
         .get('/users')
         .set('Authorization', `Bearer ${attendeeToken}`);
 
-      expect(response.status).toBe(200);
-      expect(response.body.length).toEqual(1);
+      expect(status).toEqual(200);
+      expect(body.length).toEqual(1);
 
-      const users: User[] = response.body;
+      const users: User[] = body;
 
       users.forEach(user => {
         expect(user.password).toBeUndefined();

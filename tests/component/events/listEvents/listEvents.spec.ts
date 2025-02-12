@@ -1,7 +1,13 @@
-import axios from 'axios';
+import request from 'supertest';
+import { App } from 'supertest/types';
 import { upSeedDB, downSeedDB } from './seed';
+import { getTestApp } from '../../../testServer';
 
-const BASE_URL = 'http://localhost:3001/events';
+let app: App;
+
+beforeAll(async () => {
+  app = await getTestApp();
+});
 
 describe('GET /events', () => {
 
@@ -15,9 +21,9 @@ describe('GET /events', () => {
 
   describe('Success', () => {
     test('Retrieves events', async () => {
-      const { status, data } = await axios.get(BASE_URL);
-      expect(status).toBe(200);
-      expect(data.length).toEqual(2);
+      const { status, body } = await request(app).get('/events');
+      expect(status).toEqual(200);
+      expect(body.length).toEqual(2);
     });
   });
 });

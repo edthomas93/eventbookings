@@ -1,13 +1,17 @@
-import axios from 'axios';
-
+import request from 'supertest';
+import { App } from 'supertest/types';
 import { upSeedDB, downSeedDB, hostId, attendeeId } from './seed';
 import { Events } from '../../../../src/types/api';
 import { AuthService } from '../../../../src/services/auth';
+import { getTestApp } from '../../../testServer';
 
-const BASE_URL = 'http://localhost:3001/events';
+let app: App;
+
+beforeAll(async () => {
+  app = await getTestApp();
+});
 
 const auth = new AuthService();
-
 const hostToken = auth.generateToken(hostId, 'host');
 const attendeeToken = auth.generateToken(attendeeId, 'attendee');
 
@@ -31,39 +35,37 @@ describe('POST /events', () => {
 
   describe('Success', () => {
     test('Host can create an event successfully', async () => {
-      const { status, data } = await axios.post(BASE_URL, validEventBody, {
-        headers: { Authorization: `Bearer ${hostToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/events')
+        .set('Authorization', `Bearer ${hostToken}`)
+        .send(validEventBody);
 
       expect(status).toEqual(201);
-      expect(data.id).toBeDefined();
-      expect(data.hostId).toEqual(hostId);
-      expect(data.title).toEqual(validEventBody.title);
-      expect(data.description).toEqual(validEventBody.description);
-      expect(data.startDateTime).toBeDefined(); // TODO: Fix formatting
-      expect(data.endDateTime).toBeDefined();
+      expect(body.id).toBeDefined();
+      expect(body.hostId).toEqual(hostId);
+      expect(body.title).toEqual(validEventBody.title);
+      expect(body.description).toEqual(validEventBody.description);
+      expect(body.startDateTime).toBeDefined(); // TODO: Fix formatting
+      expect(body.endDateTime).toBeDefined();
     });
   });
 
   describe('Failures', () => {
     test('Attendee cannot create an event', async () => {
-      const { status, data } = await axios.post(BASE_URL, validEventBody, {
-        headers: { Authorization: `Bearer ${attendeeToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/events')
+        .set('Authorization', `Bearer ${attendeeToken}`)
+        .send(validEventBody);
 
       expect(status).toEqual(403);
-      expect(data.message).toEqual('Only hosts can create events');
+      expect(body.message).toEqual('Only hosts can create events');
     });
 
     test('Cannot create an event without authentication', async () => {
-      const { status, data } = await axios.post(BASE_URL, validEventBody, {
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app).post('/events').send(validEventBody);
 
       expect(status).toEqual(401);
-      expect(data.message).toEqual('Unauthorized: No token provided');
+      expect(body.message).toEqual('Unauthorized: No token provided');
     });
 
     test('Cannot create an event in the past', async () => {
@@ -73,13 +75,13 @@ describe('POST /events', () => {
         endDateTime: '2023-01-01T12:00:00Z',
       };
 
-      const { status, data } = await axios.post(BASE_URL, pastEventBody, {
-        headers: { Authorization: `Bearer ${hostToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/events')
+        .set('Authorization', `Bearer ${hostToken}`)
+        .send(pastEventBody);
 
       expect(status).toEqual(400);
-      expect(data.message).toEqual('Event cannot be scheduled in the past');
+      expect(body.message).toEqual('Event cannot be scheduled in the past');
     });
 
     test('Cannot create an event with a duration shorter than 5 minutes', async () => {
@@ -89,13 +91,13 @@ describe('POST /events', () => {
         endDateTime: '2025-06-15T09:02:00Z', // Less than 5 minutes
       };
 
-      const { status, data } = await axios.post(BASE_URL, shortEventBody, {
-        headers: { Authorization: `Bearer ${hostToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/events')
+        .set('Authorization', `Bearer ${hostToken}`)
+        .send(shortEventBody);
 
       expect(status).toEqual(400);
-      expect(data.message).toEqual('Event duration must be between 5 minutes and 2 weeks');
+      expect(body.message).toEqual('Event duration must be between 5 minutes and 2 weeks');
     });
 
     test('Cannot create an event with a duration longer than 2 weeks', async () => {
@@ -105,29 +107,29 @@ describe('POST /events', () => {
         endDateTime: '2025-06-30T09:00:00Z', // More than 2 weeks
       };
 
-      const { status, data } = await axios.post(BASE_URL, longEventBody, {
-        headers: { Authorization: `Bearer ${hostToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/events')
+        .set('Authorization', `Bearer ${hostToken}`)
+        .send(longEventBody);
 
       expect(status).toEqual(400);
-      expect(data.message).toEqual('Event duration must be between 5 minutes and 2 weeks');
+      expect(body.message).toEqual('Event duration must be between 5 minutes and 2 weeks');
     });
 
     test('Cannot create an event where endDateTime is before startDateTime', async () => {
-      const invalidEventBody = {
+      const invalidDatesEventBody = {
         ...validEventBody,
         startDateTime: '2025-06-15T17:00:00Z',
         endDateTime: '2025-06-15T09:00:00Z',
       };
 
-      const { status, data } = await axios.post(BASE_URL, invalidEventBody, {
-        headers: { Authorization: `Bearer ${hostToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/events')
+        .set('Authorization', `Bearer ${hostToken}`)
+        .send(invalidDatesEventBody);
 
       expect(status).toEqual(400);
-      expect(data.message).toEqual('Event end time must be after the start time');
+      expect(body.message).toEqual('Event end time must be after the start time');
     });
 
     test('Cannot create an event with invalid request body', async () => {
@@ -138,14 +140,14 @@ describe('POST /events', () => {
         capacity: 100,
       };
 
-      const { status, data } = await axios.post(BASE_URL, invalidBody, {
-        headers: { Authorization: `Bearer ${hostToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/events')
+        .set('Authorization', `Bearer ${hostToken}`)
+        .send(invalidBody);
 
       expect(status).toEqual(400);
-      expect(data.error).toEqual('Validation failed');
-      expect(data.details).toEqual([{ message: 'should match format "date-time"' }]);
+      expect(body.error).toEqual('Validation failed');
+      expect(body.details).toEqual([{ message: 'should match format "date-time"' }]);
     });
   });
 });

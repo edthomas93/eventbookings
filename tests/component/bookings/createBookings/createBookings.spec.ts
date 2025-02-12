@@ -1,22 +1,20 @@
-import axios from 'axios';
-
+import request from 'supertest';
+import { App } from 'supertest/types';
 import { upSeedDB, downSeedDB, hostId, attendeeId, glastonburyEventId, rockEventId, jazzEventId, wildernessEventId } from './seed';
-import { Bookings } from '../../../../src/types/api';
 import { AuthService } from '../../../../src/services/auth';
+import { getTestApp } from '../../../testServer';
 
-const BASE_URL = 'http://localhost:3001/bookings';
+let app: App;
+
+beforeAll(async () => {
+  app = await getTestApp();
+});
 
 const auth = new AuthService();
-
 const hostToken = auth.generateToken(hostId, 'host');
 const attendeeToken = auth.generateToken(attendeeId, 'attendee');
 
-const validBookingBody: Bookings['PostReqBody'] = {
-  eventId: glastonburyEventId,
-};
-
 describe('POST /bookings', () => {
-
   beforeEach(async () => {
     await upSeedDB();
   });
@@ -27,91 +25,89 @@ describe('POST /bookings', () => {
 
   describe('Success', () => {
     test('Attendee can create a booking successfully', async () => {
-      const { status, data } = await axios.post(BASE_URL, validBookingBody, {
-        headers: { Authorization: `Bearer ${attendeeToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/bookings')
+        .set('Authorization', `Bearer ${attendeeToken}`)
+        .send({ eventId: glastonburyEventId });
 
       expect(status).toEqual(201);
-      expect(data.id).toBeDefined();
-      expect(data.userId).toEqual(attendeeId);
-      expect(data.eventId).toEqual(glastonburyEventId);
+      expect(body.id).toBeDefined();
+      expect(body.userId).toEqual(attendeeId);
+      expect(body.eventId).toEqual(glastonburyEventId);
     });
   });
 
   describe('Failures', () => {
     test('Host cannot book an event', async () => {
-      const { status, data } = await axios.post(BASE_URL, validBookingBody, {
-        headers: { Authorization: `Bearer ${hostToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/bookings')
+        .set('Authorization', `Bearer ${hostToken}`)
+        .send({ eventId: glastonburyEventId });
 
       expect(status).toEqual(403);
-      expect(data.message).toEqual('Only attendees can book events');
+      expect(body.message).toEqual('Only attendees can book events');
     });
 
     test('Cannot create a booking without authentication', async () => {
-      const { status, data } = await axios.post(BASE_URL, validBookingBody, {
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/bookings')
+        .send({ eventId: glastonburyEventId });
 
       expect(status).toEqual(401);
-      expect(data.message).toEqual('Unauthorized: No token provided');
+      expect(body.message).toEqual('Unauthorized: No token provided');
     });
 
     test('Cannot create a booking for a non-existent event', async () => {
-      const invalidBookingBody = { eventId: 'b32a12ea-1acc-4b96-8fac-7344b8a63456' };
-
-      const { status, data } = await axios.post(BASE_URL, invalidBookingBody, {
-        headers: { Authorization: `Bearer ${attendeeToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/bookings')
+        .set('Authorization', `Bearer ${attendeeToken}`)
+        .send({ eventId: 'd5b2c8bd-30b1-4dc4-9add-2206e31511f3' });
 
       expect(status).toEqual(404);
-      expect(data.message).toEqual('Event not found');
+      expect(body.message).toEqual('Event not found');
     });
 
     test('Cannot create a duplicate booking for the same event and user', async () => {
-      const { status, data } = await axios.post(BASE_URL, { eventId: rockEventId }, {
-        headers: { Authorization: `Bearer ${attendeeToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/bookings')
+        .set('Authorization', `Bearer ${attendeeToken}`)
+        .send({ eventId: rockEventId });
 
       expect(status).toEqual(409);
-      expect(data.message).toEqual('User has already booked this event');
+      expect(body.message).toEqual('User has already booked this event');
     });
 
     test('Cannot create a booking for a past event', async () => {
-      const { status, data } = await axios.post(BASE_URL, { eventId: jazzEventId }, {
-        headers: { Authorization: `Bearer ${attendeeToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/bookings')
+        .set('Authorization', `Bearer ${attendeeToken}`)
+        .send({ eventId: jazzEventId });
 
       expect(status).toEqual(409);
-      expect(data.message).toEqual('Cannot book an event that has already ended');
+      expect(body.message).toEqual('Cannot book an event that has already ended');
     });
 
     test('Cannot create a booking if event is at full capacity', async () => {
-      const { status, data } = await axios.post(BASE_URL, { eventId: wildernessEventId }, {
-        headers: { Authorization: `Bearer ${attendeeToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/bookings')
+        .set('Authorization', `Bearer ${attendeeToken}`)
+        .send({ eventId: wildernessEventId });
 
       expect(status).toEqual(409);
-      expect(data.message).toEqual('Event capacity exceeded');
+      expect(body.message).toEqual('Event capacity exceeded');
     });
 
     test('Cannot create a booking with an invalid request body', async () => {
       const invalidBody = {};
 
-      const { status, data } = await axios.post(BASE_URL, invalidBody, {
-        headers: { Authorization: `Bearer ${attendeeToken}` },
-        validateStatus: () => true,
-      });
+      const { status, body } = await request(app)
+        .post('/bookings')
+        .set('Authorization', `Bearer ${attendeeToken}`)
+        .send(invalidBody);
 
       expect(status).toEqual(400);
-      expect(data.error).toEqual('Validation failed');
-      expect(data.details).toEqual([{ message: `should have required property 'eventId'` }]);
+      expect(body.error).toEqual('Validation failed');
+      expect(body.details).toEqual([{ message: `should have required property 'eventId'` }]);
     });
   });
 });

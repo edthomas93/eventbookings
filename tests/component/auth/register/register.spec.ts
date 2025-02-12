@@ -1,8 +1,14 @@
-import axios from 'axios';
+import request from 'supertest';
+import { App } from 'supertest/types';
 import { upSeedDB, downSeedDB, existingUserEmail, newUserEmail } from './seed';
 import { Auth } from '../../../../src/types/api';
+import { getTestApp } from '../../../testServer';
 
-const BASE_URL = 'http://localhost:3001/auth/register';
+let app: App;
+
+beforeAll(async () => {
+  app = await getTestApp();
+});
 
 const validUser: Auth['RegisterReqBody'] = {
   name: 'John Doe',
@@ -22,14 +28,14 @@ describe('POST /auth/register', () => {
 
   describe('Success', () => {
     test('Registers a new user successfully', async () => {
-      const { status, data } = await axios.post(BASE_URL, validUser);
+      const { status, body } = await request(app).post('/auth/register').send(validUser);
 
-      expect(status).toBe(201);
-      expect(data.user.id).toBeDefined();
-      expect(data.user.name).toBe(validUser.name);
-      expect(data.user.email).toBe(validUser.email);
-      expect(data.user.role).toBe(validUser.role);
-      expect(data.token).toBeDefined();
+      expect(status).toEqual(201);
+      expect(body.user.id).toBeDefined();
+      expect(body.user.name).toEqual(validUser.name);
+      expect(body.user.email).toEqual(validUser.email);
+      expect(body.user.role).toEqual(validUser.role);
+      expect(body.token).toBeDefined();
     });
   });
 
@@ -39,34 +45,34 @@ describe('POST /auth/register', () => {
         ...validUser,
         email: existingUserEmail,
       };
-      const { status, data } = await axios.post(BASE_URL, existingEmailUser, { validateStatus: () => true });
+      const { status, body } = await request(app).post('/auth/register').send(existingEmailUser);
 
-      expect(status).toBe(409);
-      expect(data.message).toBe('Email already in use');
+      expect(status).toEqual(409);
+      expect(body.message).toEqual('Email already in use');
     });
 
     test('Fails if password is too short', async () => {
       const invalidUser = { ...validUser, password: 'short' };
-      const { status, data } = await axios.post(BASE_URL, invalidUser, { validateStatus: () => true });
+      const { status, body } = await request(app).post('/auth/register').send(invalidUser);
 
-      expect(status).toBe(400);
-      expect(data.error).toBe('Validation failed');
+      expect(status).toEqual(400);
+      expect(body.error).toEqual('Validation failed');
     });
 
     test('Fails if email format is invalid', async () => {
       const invalidUser = { ...validUser, email: 'invalid-email' };
-      const { status, data } = await axios.post(BASE_URL, invalidUser, { validateStatus: () => true });
+      const { status, body } = await request(app).post('/auth/register').send(invalidUser);
 
-      expect(status).toBe(400);
-      expect(data.error).toBe('Validation failed');
+      expect(status).toEqual(400);
+      expect(body.error).toEqual('Validation failed');
     });
 
     test('Fails if required fields are missing', async () => {
       const invalidUser = { name: 'John Doe' };
-      const { status, data } = await axios.post(BASE_URL, invalidUser, { validateStatus: () => true });
+      const { status, body } = await request(app).post('/auth/register').send(invalidUser);
 
-      expect(status).toBe(400);
-      expect(data.error).toBe('Validation failed');
+      expect(status).toEqual(400);
+      expect(body.error).toEqual('Validation failed');
     });
   });
 });
