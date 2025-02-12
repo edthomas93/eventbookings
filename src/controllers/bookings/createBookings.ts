@@ -30,6 +30,7 @@ export class CreateBookingController {
       throw new ForbiddenError('Only attendees can book events');
     }
 
+    // Use transaction to prevent race conditions if multiple users attempt to book at the same time
     return sequelize.transaction(async (transaction) => {
       const event = await this.eventRepository.getEventByIdWithLock(eventId, transaction);
       if (!event) {

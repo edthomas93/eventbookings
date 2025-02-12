@@ -45,7 +45,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Retrieve all users */
+        /** Attendees and hosts can only retrieve their own details */
         get: operations["getUsers"];
         put?: never;
         post?: never;
@@ -62,8 +62,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Retrieve a user by ID */
-        get: operations["getUserById"];
+        get?: never;
         put?: never;
         post?: never;
         /** Delete a user */
@@ -278,7 +277,7 @@ export interface operations {
                     "application/json": components["schemas"]["AuthLoginResponse"];
                 };
             };
-            /** @description Bad Request (e.g., invalid credentials) */
+            /** @description Bad Request */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -291,15 +290,11 @@ export interface operations {
     };
     getUsers: {
         parameters: {
-            query?: {
-                /** @description Filter users by role */
-                role?: "host" | "attendee";
-                /** @description Number of users to return */
-                limit?: number;
-                /** @description Offset for pagination */
-                offset?: number;
+            query?: never;
+            header: {
+                /** @description Bearer token for authentication */
+                Authorization: string;
             };
-            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -316,39 +311,13 @@ export interface operations {
             };
         };
     };
-    getUserById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description User retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"];
-                };
-            };
-            /** @description User not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     deleteUser: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Bearer token for authentication */
+                Authorization: string;
+            };
             path: {
                 id: string;
             };
@@ -375,7 +344,10 @@ export interface operations {
     updateUser: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Bearer token for authentication */
+                Authorization: string;
+            };
             path: {
                 id: string;
             };
@@ -420,14 +392,7 @@ export interface operations {
     };
     getEvents: {
         parameters: {
-            query?: {
-                /** @description Filter events by host ID */
-                hostId?: string;
-                /** @description Number of events to return */
-                limit?: number;
-                /** @description Offset for pagination */
-                offset?: number;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -449,7 +414,7 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Bearer token for authentication (Only hosts can create events) */
+                /** @description Bearer token for authentication */
                 Authorization: string;
             };
             path?: never;
@@ -522,7 +487,10 @@ export interface operations {
     updateEvent: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Bearer token for authentication */
+                Authorization: string;
+            };
             path: {
                 id: string;
             };
