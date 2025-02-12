@@ -1,17 +1,20 @@
-import axios from 'axios';
+import request from 'supertest';
 import { upSeedDB, downSeedDB, hostId, attendeeId } from './seed';
-import { User } from '../../../../src/models/users';
 import { AuthService } from '../../../../src/services/auth';
+import { getTestApp } from '../../../testServer';
+import { User } from '../../../../src/models';
 
-const BASE_URL = 'http://localhost:3001/users';
+let app: any;
 
 const auth = new AuthService();
-
 const hostToken = auth.generateToken(hostId, 'host');
 const attendeeToken = auth.generateToken(attendeeId, 'attendee');
 
-describe('GET /users', () => {
+beforeAll(async () => {
+  app = await getTestApp();
+});
 
+describe('GET /users', () => {
   beforeEach(async () => {
     await upSeedDB();
   });
@@ -22,31 +25,37 @@ describe('GET /users', () => {
 
   describe('Success', () => {
     test('List users as a host only returns host details', async () => {
-      const { status, data } = await axios.get<User[]>(BASE_URL, {
-        headers: { Authorization: `Bearer ${hostToken}` }
-      });
-      expect(status).toBe(200);
-      expect(data.length).toEqual(1);
+      const response = await request(app)
+        .get('/users')
+        .set('Authorization', `Bearer ${hostToken}`);
 
-      data.forEach(user => {
-        expect(user.password).toBeUndefined()
+      expect(response.status).toBe(200);
+      expect(response.body.length).toEqual(1);
+
+      const users: User[] = response.body;
+
+      users.forEach(user => {
+        expect(user.password).toBeUndefined();
         expect(user.role).toEqual('host');
         expect(user.id).toEqual(hostId);
       });
     });
 
     test('List users as an attendee only returns attendee details', async () => {
-      const { status, data } = await axios.get<User[]>(BASE_URL, {
-        headers: { Authorization: `Bearer ${attendeeToken}` }
-      });
-      expect(status).toBe(200);
-      expect(data.length).toEqual(1);
+      const response = await request(app)
+        .get('/users')
+        .set('Authorization', `Bearer ${attendeeToken}`);
 
-      data.forEach(user => {
+      expect(response.status).toBe(200);
+      expect(response.body.length).toEqual(1);
+
+      const users: User[] = response.body;
+
+      users.forEach(user => {
         expect(user.password).toBeUndefined();
         expect(user.role).toEqual('attendee');
         expect(user.id).toEqual(attendeeId);
-      })
+      });
     });
   });
 });
