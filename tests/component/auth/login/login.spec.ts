@@ -1,5 +1,5 @@
 import axios from 'axios';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import { upSeedDB, downSeedDB, password, hostId } from './seed';
 import { Auth } from '../../../../src/types/api';
