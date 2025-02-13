@@ -31,7 +31,7 @@ describe('POST /auth/register', () => {
       const { status, body } = await request(app).post('/auth/register').send(validUser);
 
       expect(status).toEqual(201);
-      expect(body.user.id).toBeDefined();
+      expect(body.user.userId).toBeDefined();
       expect(body.user.name).toEqual(validUser.name);
       expect(body.user.email).toEqual(validUser.email);
       expect(body.user.role).toEqual(validUser.role);

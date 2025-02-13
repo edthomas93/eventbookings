@@ -13,51 +13,51 @@ const bookingId1 = 'd9e7d816-958f-4463-aa16-5814d5c62e79';
 
 const upSeedDB = async () => {
   try {
-    const host = await User.create({ id: hostId, name: 'John Doe', email: 'john@example.com', role: 'host', password: 'Password1234' });
-    const attendee = await User.create({ id: attendeeId, name: 'Jane Smith', email: 'jane@example.com', role: 'attendee', password: 'Password1234' });
+    const host = await User.create({ userId: hostId, name: 'John Doe', email: 'john@example.com', role: 'host', password: 'Password1234' });
+    const attendee = await User.create({ userId: attendeeId, name: 'Jane Smith', email: 'jane@example.com', role: 'attendee', password: 'Password1234' });
 
     const event1 = await Event.create({
-      id: rockEventId,
+      eventId: rockEventId,
       title: 'Rock Concert',
       description: 'An amazing rock show!',
-      hostId: host.id,
+      hostId: host.userId,
       startDateTime: new Date('2025-01-19T19:00:00'),
       endDateTime: new Date('2025-01-20T00:00:00'),
       capacity: 10,
     });
 
     await Event.create({
-      id: jazzEventId,
+      eventId: jazzEventId,
       title: 'Jazz Night',
       description: 'Smooth jazz evening.',
-      hostId: host.id,
+      hostId: host.userId,
       startDateTime: new Date('2024-02-15T19:30:00'),
       endDateTime: new Date('2024-02-15T23:30:00'), // PAST EVENT
       capacity: 15,
     });
 
     await Event.create({
-      id: glastonburyEventId,
+      eventId: glastonburyEventId,
       title: 'Glastonbury',
       description: 'The Legendary music festival returns to Worthy Farm',
-      hostId: host.id,
+      hostId: host.userId,
       startDateTime: new Date('2026-06-15T10:30:00'),
       endDateTime: new Date('2026-06-20T23:30:00'),
       capacity: 20,
     });
 
     await Event.create({
-      id: wildernessEventId,
+      eventId: wildernessEventId,
       title: 'Wilderness',
       description: 'Get in the field and get dancing!',
-      hostId: host.id,
+      hostId: host.userId,
       startDateTime: new Date('2026-06-15T10:30:00'),
       endDateTime: new Date('2026-06-20T23:30:00'),
       capacity: 20,
       numberOfAttendees: 20,
     });
 
-    await Booking.create({ id: bookingId1, userId: attendee.id, eventId: event1.id });
+    await Booking.create({ bookingId: bookingId1, userId: attendee.userId, eventId: event1.eventId });
 
     console.log('Database seeded successfully.');
   } catch (error) {
@@ -80,7 +80,7 @@ const downSeedDB = async () => {
 
     await Event.destroy({
       where: {
-        id: [
+        eventId: [
           rockEventId,
           jazzEventId,
           glastonburyEventId,
@@ -91,7 +91,7 @@ const downSeedDB = async () => {
 
     await User.destroy({
       where: {
-        id: [
+        userId: [
           hostId,
           hostId2,
           attendeeId,

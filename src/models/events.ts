@@ -1,8 +1,8 @@
-import { DataTypes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, Model } from 'sequelize';
 import { sequelize } from '../database';
 
 export class Event extends Model {
-  declare id: string;
+  declare eventId: string;
   declare title: string;
   declare description?: string;
   declare startDateTime: Date;
@@ -10,13 +10,14 @@ export class Event extends Model {
   declare hostId: string;
   declare capacity: number;
   declare numberOfAttendees: number;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 Event.init(
   {
-    id: {
+    eventId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     title: {

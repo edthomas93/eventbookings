@@ -31,7 +31,7 @@ describe('POST /bookings', () => {
         .send({ eventId: glastonburyEventId });
 
       expect(status).toEqual(201);
-      expect(body.id).toBeDefined();
+      expect(body.bookingId).toBeDefined();
       expect(body.userId).toEqual(attendeeId);
       expect(body.eventId).toEqual(glastonburyEventId);
     });

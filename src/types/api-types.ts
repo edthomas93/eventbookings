@@ -55,7 +55,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/{id}": {
+    "/users/{userId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -91,7 +91,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/{id}": {
+    "/events/{eventId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -166,11 +166,16 @@ export interface components {
             token: string;
         };
         User: {
-            id?: string;
-            name?: string;
-            email?: string;
+            /** Format: uuid */
+            userId: string;
+            name: string;
+            email: string;
             /** @enum {string} */
-            role?: "host" | "attendee";
+            role: "host" | "attendee";
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         CreateEventRequest: {
             title: string;
@@ -182,31 +187,52 @@ export interface components {
             capacity: number;
         };
         Event: {
-            id: string;
+            /** Format: uuid */
+            eventId: string;
             title: string;
             description?: string;
             /** Format: date-time */
             startDateTime: string;
             /** Format: date-time */
             endDateTime: string;
+            /** Format: uuid */
             hostId: string;
             /** @example 100 */
             capacity: number;
             /** @example 25 */
-            readonly numberOfAttendees?: number;
+            readonly numberOfAttendees: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         CreateBookingRequest: {
+            /** Format: uuid */
             eventId: string;
         };
         Booking: {
-            id: string;
+            /** Format: uuid */
+            bookingId: string;
+            /** Format: uuid */
             userId: string;
+            /** Format: uuid */
             eventId: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         EnrichedBookingResponse: {
-            id: string;
+            /** Format: uuid */
+            bookingId: string;
+            /** Format: uuid */
             userId: string;
+            /** Format: uuid */
             eventId: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
             event: components["schemas"]["Event"];
         };
         ErrorResponse: {
@@ -319,7 +345,7 @@ export interface operations {
                 Authorization: string;
             };
             path: {
-                id: string;
+                userId: string;
             };
             cookie?: never;
         };
@@ -349,7 +375,7 @@ export interface operations {
                 Authorization: string;
             };
             path: {
-                id: string;
+                userId: string;
             };
             cookie?: never;
         };
@@ -460,7 +486,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: string;
+                eventId: string;
             };
             cookie?: never;
         };
@@ -492,7 +518,7 @@ export interface operations {
                 Authorization: string;
             };
             path: {
-                id: string;
+                eventId: string;
             };
             cookie?: never;
         };

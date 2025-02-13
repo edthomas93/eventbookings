@@ -28,7 +28,7 @@ export class LoginController {
       throw new UnauthorizedError('Invalid email or password');
     }
 
-    const token = this.authService.generateToken(user.id, user.role);
+    const token = this.authService.generateToken(user.userId, user.role);
 
     return { token };
   }

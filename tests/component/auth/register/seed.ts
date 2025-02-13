@@ -7,7 +7,7 @@ export const newUserEmail = 'new@example.com';
 const upSeedDB = async () => {
   try {
     await User.create({
-      id: existingUserId,
+      userId: existingUserId,
       name: 'Existing User',
       email: existingUserEmail,
       password: 'Password1234',

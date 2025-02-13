@@ -78,7 +78,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-  /users/{id}:
+  /users/{userId}:
     patch:
       tags: 
         - Users
@@ -92,10 +92,11 @@ paths:
             type: string
           description: Bearer token for authentication
         - in: path
-          name: id
+          name: userId
           required: true
           schema:
             type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -137,10 +138,11 @@ paths:
             type: string
           description: Bearer token for authentication
         - in: path
-          name: id
+          name: userId
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         '204':
           description: User deleted successfully
@@ -199,7 +201,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
-  /events/{id}:
+  /events/{eventId}:
     get:
       tags: 
         - Events
@@ -207,10 +209,11 @@ paths:
       operationId: getEventById
       parameters:
         - in: path
-          name: id
+          name: eventId
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         '200':
           description: Event retrieved successfully
@@ -233,7 +236,7 @@ paths:
             type: string
           description: Bearer token for authentication
         - in: path
-          name: id
+          name: eventId
           required: true
           schema:
             type: string
@@ -392,9 +395,17 @@ components:
           example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
     User:
       type: object
+      required:
+        - userId
+        - name
+        - email
+        - role
+        - createdAt
+        - updatedAt
       properties:
-        id:
+        userId:
           type: string
+          format: uuid
         name:
           type: string
         email:
@@ -402,6 +413,12 @@ components:
         role:
           type: string
           enum: [host, attendee]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     CreateEventRequest:
       type: object
       required:
@@ -426,15 +443,19 @@ components:
     Event:
       type: object
       required:
-        - id
+        - eventId
         - title
         - startDateTime
         - endDateTime
         - hostId
         - capacity
+        - numberOfAttendees
+        - createdAt
+        - updatedAt
       properties:
-        id:
+        eventId:
           type: string
+          format: uuid
         title:
           type: string
         description:
@@ -447,6 +468,7 @@ components:
           format: date-time
         hostId:
           type: string
+          format: uuid
         capacity:
           type: integer
           minimum: 1
@@ -456,7 +478,12 @@ components:
           minimum: 0
           readOnly: true
           example: 25
-
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     CreateBookingRequest:
       type: object
       required:
@@ -464,33 +491,56 @@ components:
       properties:
         eventId:
           type: string
+          format: uuid
     Booking:
       type: object
       required:
-        - id
+        - bookingId
         - userId
         - eventId
+        - createdAt
+        - updatedAt
       properties:
-        id:
+        bookingId:
           type: string
+          format: uuid
         userId:
           type: string
+          format: uuid
         eventId:
           type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     EnrichedBookingResponse:
       type: object
       required:
-        - id
+        - bookingId
         - userId
         - eventId
+        - createdAt
+        - updatedAt
         - event
       properties:
-        id:
+        bookingId:
           type: string
+          format: uuid
         userId:
           type: string
+          format: uuid
         eventId:
           type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
         event:
           $ref: '#/components/schemas/Event'
     ErrorResponse:

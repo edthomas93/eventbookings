@@ -36,7 +36,7 @@ describe('GET /bookings', () => {
       expect(status).toEqual(200);
       expect(bookings.length).toEqual(1);
       bookings.forEach(booking => {
-        expect(booking.id).toBeDefined();
+        expect(booking.bookingId).toBeDefined();
         expect(booking.eventId).toEqual(glastonburyEventId);
       });
     });
@@ -60,10 +60,10 @@ describe('GET /bookings', () => {
       expect(status).toEqual(200);
       expect(body.length).toEqual(1);
       bookings.forEach(booking => {
-        expect(booking.id).toBeDefined();
+        expect(booking.bookingId).toBeDefined();
         expect(booking.userId).toEqual(attendeeId);
         expect(booking.eventId).toEqual(glastonburyEventId);
-        expect(booking.event.id).toEqual(booking.eventId);
+        expect(booking.event.eventId).toEqual(booking.eventId);
       });
     });
   });

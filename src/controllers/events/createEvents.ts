@@ -1,5 +1,4 @@
 import { EventRepository } from '../../repositories/event';
-import { Event } from '../../models/events';
 import { v7 as uuid } from 'uuid';
 import { Events } from '../../types/api';
 import { Role, UserDetails } from '../../types/auth';
@@ -18,7 +17,7 @@ export class CreateEventController {
 
   // TODO: Add attribute for booking date (i.e. cannot necessarily book immediately)
 
-  async createEvent(eventData: Events['PostReqBody']): Promise<Event> {
+  async createEvent(eventData: Events['PostReqBody']): Promise<Events['PostResBody']> {
     if (this.role !== 'host') {
       throw new ForbiddenError('Only hosts can create events');
     }
@@ -45,7 +44,7 @@ export class CreateEventController {
 
     const event = {
       ...eventData,
-      id: uuid(),
+      eventId: uuid(),
       hostId: this.userId,
       startDateTime: new Date(eventData.startDateTime),
       endDateTime: new Date(eventData.endDateTime),

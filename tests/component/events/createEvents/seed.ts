@@ -6,8 +6,8 @@ export const attendeeId = 'f8e1ef1a-59f8-41fc-a0a9-c297a4af4d82';
 
 const upSeedDB = async () => {
   try {
-    await User.create({ id: hostId, name: 'John Doe', email: 'john@example.com', role: 'host', password: 'Password1234' });
-    await User.create({ id: attendeeId, name: 'Jane Smith', email: 'jane@example.com', role: 'attendee', password: 'Password1234' });
+    await User.create({ userId: hostId, name: 'John Doe', email: 'john@example.com', role: 'host', password: 'Password1234' });
+    await User.create({ userId: attendeeId, name: 'Jane Smith', email: 'jane@example.com', role: 'attendee', password: 'Password1234' });
 
     console.log('Database seeded successfully.');
   } catch (error) {
@@ -23,7 +23,7 @@ const downSeedDB = async () => {
 
     await User.destroy({
       where: {
-        id: [
+        userId: [
           hostId,
           attendeeId,
         ],

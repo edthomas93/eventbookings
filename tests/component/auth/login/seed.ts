@@ -7,7 +7,7 @@ export const password = 'Password1234';
 const upSeedDB = async () => {
   try {
     const hashedPassword = await new AuthService().hashPassword(password);
-    await User.create({ id: hostId, name: 'John Doe', email: 'ed@example.com', role: 'host', password: hashedPassword });
+    await User.create({ userId: hostId, name: 'John Doe', email: 'ed@example.com', role: 'host', password: hashedPassword });
 
     console.log('Database seeded successfully.');
   } catch (error) {
@@ -19,7 +19,7 @@ const downSeedDB = async () => {
   try {
     await User.destroy({
       where: {
-        id: hostId,
+        userId: hostId,
       },
     });
 

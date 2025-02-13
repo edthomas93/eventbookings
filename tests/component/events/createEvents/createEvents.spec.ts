@@ -41,7 +41,7 @@ describe('POST /events', () => {
         .send(validEventBody);
 
       expect(status).toEqual(201);
-      expect(body.id).toBeDefined();
+      expect(body.eventId).toBeDefined();
       expect(body.hostId).toEqual(hostId);
       expect(body.title).toEqual(validEventBody.title);
       expect(body.description).toEqual(validEventBody.description);

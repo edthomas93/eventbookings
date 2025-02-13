@@ -8,24 +8,24 @@ const jazzEventId = '7164487e-1c67-41a8-b732-89557243d46c';
 
 const upSeedDB = async () => {
   try {
-    const host = await User.create({ id: hostId, name: 'John Doe', email: 'john@example.com', role: 'host', password: 'Password1234' });
-    await User.create({ id: attendeeId, name: 'Jane Smith', email: 'jane@example.com', role: 'attendee', password: 'Password1234' });
+    const host = await User.create({ userId: hostId, name: 'John Doe', email: 'john@example.com', role: 'host', password: 'Password1234' });
+    await User.create({ userId: attendeeId, name: 'Jane Smith', email: 'jane@example.com', role: 'attendee', password: 'Password1234' });
 
     await Event.create({
-      id: rockEventId,
+      eventId: rockEventId,
       title: 'Rock Concert',
       description: 'An amazing rock show!',
-      hostId: host.id,
+      hostId: host.userId,
       startDateTime: new Date('2025-01-19T19:00:00'),
       endDateTime: new Date('2025-01-20T00:00:00'),
       capacity: 10,
     });
 
     await Event.create({
-      id: jazzEventId,
+      eventId: jazzEventId,
       title: 'Jazz Night',
       description: 'Smooth jazz evening.',
-      hostId: host.id,
+      hostId: host.userId,
       startDateTime: new Date('2025-02-15T19:30:00'),
       endDateTime: new Date('2025-02-15T23:30:00'),
       capacity: 10,
@@ -41,7 +41,7 @@ const downSeedDB = async () => {
   try {
     await Event.destroy({
       where: {
-        id: [
+        eventId: [
           rockEventId,
           jazzEventId,
         ],
@@ -50,7 +50,7 @@ const downSeedDB = async () => {
 
     await User.destroy({
       where: {
-        id: [
+        userId: [
           hostId,
           attendeeId,
         ],

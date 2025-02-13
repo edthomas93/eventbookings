@@ -25,21 +25,23 @@ export class RegisterController {
     const hashedPassword = await this.authService.hashPassword(password);
 
     const user = await this.userRepository.createUser({
-      id: uuid(),
+      userId: uuid(),
       name,
       email,
       password: hashedPassword,
       role,
     });
 
-    const token = this.authService.generateToken(user.id, user.role);
+    const token = this.authService.generateToken(user.userId, user.role);
 
     return {
       user: {
-        id: user.id,
+        userId: user.userId,
         name: user.name,
         email: user.email,
         role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       },
       token,
     };

@@ -1,19 +1,20 @@
-import { DataTypes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, Model } from 'sequelize';
 import { sequelize } from '../database';
 
 export class User extends Model {
-  public id!: string;
-  public name!: string;
-  public email!: string;
-  public role!: 'host' | 'attendee';
-  public password!: string;
+  declare userId: string;
+  declare name: string;
+  declare email: string;
+  declare role: 'host' | 'attendee';
+  private declare password: string;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 User.init(
   {
-    id: {
+    userId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     name: {

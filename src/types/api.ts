@@ -12,7 +12,7 @@ type UsersResponse = components['schemas']['User'];
 export interface Users {
   ListResBody: UsersResponse[];
   GetResBody: UsersResponse;
-  PatchReqBody: paths['/users/{id}']['patch']['requestBody']['content']['application/json'];
+  PatchReqBody: paths['/users/{userId}']['patch']['requestBody']['content']['application/json'];
   PatchResBody: UsersResponse;
 }
 
@@ -23,12 +23,11 @@ export interface Events {
   PostResBody: EventsResponse;
   ListResBody: EventsResponse[];
   GetResBody: EventsResponse;
-  PatchReqBody: paths['/events/{id}']['patch']['requestBody']['content']['application/json'];
+  PatchReqBody: paths['/events/{eventId}']['patch']['requestBody']['content']['application/json'];
   PatchResBody: EventsResponse;
 }
 
-type BookingsResponse = components['schemas']['Event'];
-
+type BookingsResponse = components['schemas']['Booking'];
 export interface Bookings {
   PostReqBody: paths['/bookings']['post']['requestBody']['content']['application/json'];
   PostResBody: BookingsResponse;

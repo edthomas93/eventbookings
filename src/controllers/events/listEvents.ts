@@ -1,5 +1,5 @@
 import { EventRepository } from '../../repositories/event';
-import { Event } from '../../models/events';
+import { Events } from '../../types/api';
 
 export class ListEventsController {
   private eventRepository: EventRepository;
@@ -8,7 +8,7 @@ export class ListEventsController {
     this.eventRepository = eventRepository;
   }
 
-  async listEvents(): Promise<Event[]> {
+  async listEvents(): Promise<Events['ListResBody']> {
     // TODO: As a host list only your events
     return this.eventRepository.listEventsWhere();
   }

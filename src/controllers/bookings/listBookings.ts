@@ -1,4 +1,5 @@
 import { BookingRepository } from '../../repositories/booking';
+import { Bookings } from '../../types/api';
 import { Role, UserDetails } from '../../types/auth';
 
 export class ListBookingsController {
@@ -12,9 +13,7 @@ export class ListBookingsController {
     this.bookingRepository = bookingRepository;
   }
 
-  // TODO: Fix return typing
-
-  async listBookings() {
+  async listBookings(): Promise<Bookings['ListResBody']> {
     if (this.role === 'attendee') {
       return this.bookingRepository.getBookingsForUser(this.userId);
     }

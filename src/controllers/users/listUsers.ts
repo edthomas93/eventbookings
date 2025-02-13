@@ -14,6 +14,6 @@ export class ListUsersController {
   }
 
   async execute() {
-    return this.userRepository.listWhere({ id: this.userId });
+    return this.userRepository.listWhere({ userId: this.userId });
   }
 }

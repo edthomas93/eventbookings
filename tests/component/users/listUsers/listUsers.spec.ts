@@ -4,6 +4,7 @@ import { upSeedDB, downSeedDB, hostId, attendeeId } from './seed';
 import { AuthService } from '../../../../src/services/auth';
 import { getTestApp } from '../../../testServer';
 import { User } from '../../../../src/models';
+import { Users } from '../../../../src/types/api';
 
 let app: App;
 
@@ -33,12 +34,12 @@ describe('GET /users', () => {
       expect(status).toEqual(200);
       expect(body.length).toEqual(1);
 
-      const users: User[] = body;
+      const users: Users['ListResBody'] = body;
 
       users.forEach(user => {
-        expect(user.password).toBeUndefined();
+        expect(user).not.toHaveProperty('password');
         expect(user.role).toEqual('host');
-        expect(user.id).toEqual(hostId);
+        expect(user.userId).toEqual(hostId);
       });
     });
 
@@ -50,12 +51,12 @@ describe('GET /users', () => {
       expect(status).toEqual(200);
       expect(body.length).toEqual(1);
 
-      const users: User[] = body;
+      const users: Users['ListResBody'] = body;
 
       users.forEach(user => {
-        expect(user.password).toBeUndefined();
+        expect(user).not.toHaveProperty('password');
         expect(user.role).toEqual('attendee');
-        expect(user.id).toEqual(attendeeId);
+        expect(user.userId).toEqual(attendeeId);
       });
     });
   });

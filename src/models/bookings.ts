@@ -1,17 +1,18 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, CreationOptional } from 'sequelize';
 import { sequelize } from '../database';
 
 export class Booking extends Model {
-  declare id: string;
+  declare bookingId: string;
   declare userId: string;
   declare eventId: string;
+  declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 Booking.init(
   {
-    id: {
+    bookingId: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     userId: {
