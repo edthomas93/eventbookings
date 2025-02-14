@@ -24,44 +24,38 @@ export class CreateBookingController {
   }
 
   async createBooking(bookingData: Bookings['PostReqBody']): Promise<Bookings['PostResBody']> {
-    try {
-      const { eventId } = bookingData;
+    const { eventId } = bookingData;
 
-      if (this.role !== 'attendee') {
-        throw new ForbiddenError('Only attendees can book events');
+    if (this.role !== 'attendee') {
+      throw new ForbiddenError('Only attendees can book events');
+    }
+
+    // Use transaction to prevent race conditions if multiple users attempt to book at the same time
+    return sequelize.transaction(async (transaction) => {
+      const event = await this.eventRepository.getEventByIdWithLock(eventId, transaction);
+      if (!event) {
+        throw new NotFoundError('Event not found');
       }
 
-      // Use transaction to prevent race conditions if multiple users attempt to book at the same time
-      return sequelize.transaction(async (transaction) => {
-        const event = await this.eventRepository.getEventByIdWithLock(eventId, transaction);
-        if (!event) {
-          throw new NotFoundError('Event not found');
-        }
+      const existingBooking = await this.bookingRepository.findBooking(this.userId, eventId, transaction);
+      if (existingBooking) {
+        throw new ConflictError('User has already booked this event');
+      }
 
-        const existingBooking = await this.bookingRepository.findBooking(this.userId, eventId, transaction);
-        if (existingBooking) {
-          throw new ConflictError('User has already booked this event');
-        }
+      const currentDate = new Date();
+      if (new Date(event.endDateTime) < currentDate) {
+        throw new ConflictError('Cannot book an event that has already ended');
+      }
 
-        const currentDate = new Date();
-        if (new Date(event.endDateTime) < currentDate) {
-          throw new ConflictError('Cannot book an event that has already ended');
-        }
+      if (event.numberOfAttendees >= event.capacity) {
+        throw new ConflictError('Event capacity exceeded');
+      }
 
-        if (event.numberOfAttendees >= event.capacity) {
-          throw new ConflictError('Event capacity exceeded');
-        }
+      await this.eventRepository.updateEvent(eventId, {
+        numberOfAttendees: event.numberOfAttendees + 1,
+      }, transaction);
 
-        await this.eventRepository.updateEvent(eventId, {
-          numberOfAttendees: event.numberOfAttendees + 1,
-        }, transaction);
-
-        return this.bookingRepository.createBooking({ bookingId: uuid(), userId: this.userId, eventId }, transaction);
-      });
-
-    } catch (error) {
-      console.log("ERRROR >>>>>>>>", error);
-      throw error;
-    }
+      return this.bookingRepository.createBooking({ bookingId: uuid(), userId: this.userId, eventId }, transaction);
+    });
   }
 }

@@ -103,6 +103,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 name:
                   type: string
@@ -112,10 +113,6 @@ paths:
                   format: email
                   pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
                   example: updated.email@example.com
-                role:
-                  type: string
-                  enum: [host, attendee]
-                  example: attendee
       responses:
         '200':
           description: User updated successfully
@@ -246,6 +243,7 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 title:
                   type: string
@@ -341,6 +339,7 @@ components:
         - email
         - password
         - role
+      additionalProperties: false
       properties:
         name:
           type: string
@@ -376,6 +375,7 @@ components:
       required:
         - email
         - password
+      additionalProperties: false
       properties:
         email:
           type: string
@@ -426,6 +426,7 @@ components:
         - startDateTime
         - endDateTime
         - capacity
+      additionalProperties: false
       properties:
         title:
           type: string
@@ -486,6 +487,7 @@ components:
           format: date-time
     CreateBookingRequest:
       type: object
+      additionalProperties: false
       required:
         - eventId
       properties:

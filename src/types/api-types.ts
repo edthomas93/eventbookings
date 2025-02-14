@@ -389,11 +389,6 @@ export interface operations {
                      * @example updated.email@example.com
                      */
                     email?: string;
-                    /**
-                     * @example attendee
-                     * @enum {string}
-                     */
-                    role?: "host" | "attendee";
                 };
             };
         };
